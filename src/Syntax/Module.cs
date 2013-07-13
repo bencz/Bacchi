@@ -42,11 +42,20 @@ namespace Bacchi.Syntax
             get { return _block; }
         }
 
+        /** Constructor for the \c Module class.
+         *
+         *  \note \c block may be null, if there's no private part (the module contains only public definitions).
+         */
         public Module(Position position, Definition[] definitions, Block block):
             base(NodeKind.Module, position)
         {
             _definitions = definitions;
-            _block       = block;
+            foreach (Definition definition in _definitions)
+                definition.Above = this;
+
+            _block = block;
+            if (_block != null)
+                _block.Above = this;
         }
 
         public static Module Parse(Tokens tokens)
@@ -55,11 +64,16 @@ namespace Bacchi.Syntax
             Token name  = tokens.Match(TokenKind.Identifier);
 
             // Parse module interface.
-            var definitions = Definition.ParseList(tokens, TokenKind.Keyword_Private);
+            var definitions = Definition.ParseList(tokens, TokenKind.Keyword_Private, TokenKind.Keyword_Begin);
 
-            // Parse private block.
-            tokens.Match(TokenKind.Keyword_Private);
-            Block block = Block.Parse(tokens);
+            // Parse optional private block.
+            Block block = null;
+            if (tokens.Peek.Kind == TokenKind.Keyword_Private)
+            {
+                tokens.Match(TokenKind.Keyword_Private);
+                block = Block.Parse(tokens);
+            }
+            tokens.Match(TokenKind.Symbol_Dot);
 
             return new Module(start.Position, definitions, block);
         }

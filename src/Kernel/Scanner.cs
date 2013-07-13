@@ -26,9 +26,7 @@ using System.Collections.Generic;       // Dictionary<T1, T2>
 using System.IO;                        // TextReader
 using System.Text;                      // StringBuilder
 
-using Bacchi.Kernel;                    // Error, Position
-
-namespace Bacchi.Reader
+namespace Bacchi.Kernel
 {
     /** The Bacchi scanner, which consumes an entire input file and returns a complete array of tokens. */
     public class Scanner
@@ -104,18 +102,22 @@ namespace Bacchi.Reader
             }
         }
 
+        /** Retrieves a single character, returning EOF indefinitely once end-of-file has been encountered. */
+        private char GetChar()
+        {
+            char result = _lookahead;
+            _lookahead = (_offset != _source.Length) ? _source[_offset++] : EOF;
+            return result;
+        }
+
         /** Reads a single character, expanding tabs and maintaining the _cursor member variable. */
         private char ReadChar()
         {
-            if (_offset == _source.Length)
-                return EOF;
-
-            char result = _lookahead;
-            _lookahead  = _source[_offset++];
+            char result = GetChar();
 
             // Silently discard the carriage-return present on Winblows platforms.
-            if (result == '\r' && _lookahead == '\n')
-                ReadChar();
+            if (_lookahead == '\r')
+                GetChar();
 
             _cursor.NextChar();
             if (result == '\n')
@@ -180,6 +182,7 @@ namespace Bacchi.Reader
         /** Produces a single token from the string buffer \c _source. */
         public bool ProduceToken()
         {
+Again:
             bool result = true;         // Assume there are more tokens in the input file.
 
             Token token = new Token(_cursor);
@@ -193,7 +196,7 @@ namespace Bacchi.Reader
                     // Discard embedded spaces and tabs.
                     while (_lookahead == ' ' || _lookahead == '\t')
                         ReadChar();
-                    return ProduceToken();
+                    goto Again;
 
                 case '-':
                     switch (_lookahead)
@@ -201,10 +204,8 @@ namespace Bacchi.Reader
                         case '-':       // Comment
                             ReadChar(); // Drop second '-'.
                             while (_lookahead != '\n' && _lookahead != EOF)
-                                _text.Append(ReadChar());
-                            token.Kind = TokenKind.Comment;
-                            token.Text = _text.ToString();
-                            return ProduceToken();
+                                ReadChar();
+                            goto Again;
 
                         case '>':       // -> symbol
                             ReadChar(); // Drop '>'.
@@ -223,7 +224,7 @@ namespace Bacchi.Reader
                     break;
 
                 case '\n':
-                    return ProduceToken();
+                    goto Again;
 
                 case '.':
                     if (_lookahead == '.')
@@ -270,7 +271,6 @@ namespace Bacchi.Reader
 
                 case '\'':
                 case '\"':
-                    token.Kind = TokenKind.String;
                     while (_lookahead != ch)
                     {
                         switch (_lookahead)
@@ -287,6 +287,7 @@ namespace Bacchi.Reader
                                 break;
                         }
                     }
+                    ReadChar();         // Skip closing '\''
                     token.Kind = TokenKind.String;
                     token.Text = _text.ToString();
                     break;

@@ -82,14 +82,14 @@ namespace Bacchi.Syntax
             return result;
         }
 
-        public static Definition[] ParseList(Tokens tokens, TokenKind terminator)
+        public static Definition[] ParseList(Tokens tokens, TokenKind terminator1, TokenKind terminator2 = TokenKind.None)
         {
             var definitions = new List<Definition>();
-            do
+            while (tokens.Peek.Kind != terminator1 && tokens.Peek.Kind != terminator2)
             {
                 var definition = Definition.Parse(tokens);
                 definitions.Add(definition);
-            }  while (tokens.Peek.Kind != terminator);
+            }
 
             return definitions.ToArray();
         }

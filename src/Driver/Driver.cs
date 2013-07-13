@@ -19,36 +19,45 @@
 #endregion
 
 /** \file
- *  Defines the \c Visitor interface, which is used to traverse the Abstract Syntax Tree (AST).
+ *  The main driver program for the Bacchi compiler.
  */
 
-namespace Bacchi.Syntax
+using System.Collections.Generic;       // Dictionary<T1, T2>
+
+using Bacchi.Kernel;                    // Error
+using Bacchi.Syntax;                    // Program
+
+namespace Bacchi.Driver
 {
-    /** Interface used by the Visitor pattern. */
-    public interface Visitor
+    public static class Bacchi
     {
-        object Visit(Argument that);
-        object Visit(ArrayReference that);
-        object Visit(Assignment that);
-        object Visit(Block that);
-        object Visit(BooleanLiteral that);
-        object Visit(BooleanType that);
-        object Visit(CallStatement that);
-        object Visit(Definition that);
-        object Visit(File that);
-        object Visit(ForallStatement that);
-        object Visit(Guard that);
-        object Visit(IdentifierReference that);
-        object Visit(IdentifierType that);
-        object Visit(IntegerExpression that);
-        object Visit(IntegerLiteral that);
-        object Visit(IntegerType that);
-        object Visit(Module that);
-        object Visit(Parameter that);
-        object Visit(Program that);
-        object Visit(Statement that);
-        object Visit(StringLiteral that);
-        object Visit(TupleType that);
+        public static int Main(string[] arguments)
+        {
+            int result;
+            try
+            {
+                // Parse the input files into a single, coherent Abstract Syntax Tree.
+                Program program = Program.Parse(arguments);
+
+                result = 0;
+            }
+            catch (Error that)
+            {
+                System.Console.WriteLine(that.Position.ToString() + " Error: " + that.Message);
+#if TEST
+                throw;
+#endif
+                result = 1;
+            }
+            catch (System.Exception that)
+            {
+                System.Console.WriteLine("Error: " + that.Message);
+                result = 1;
+            }
+
+            return result;
+        }
     }
 }
+
 

@@ -33,6 +33,7 @@ namespace Bacchi.Syntax
         Argument,
         Assignment,
         Block,
+        File,
         Guard,
         Module,
         Parameter,

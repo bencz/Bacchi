@@ -19,36 +19,63 @@
 #endregion
 
 /** \file
- *  Defines the \c Visitor interface, which is used to traverse the Abstract Syntax Tree (AST).
+ *  Defines the \c File class, which represents a single source file in a program.
  */
+
+using System.Collections.Generic;       // List<T>
+
+using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    /** Interface used by the Visitor pattern. */
-    public interface Visitor
+    public class File: Node
     {
-        object Visit(Argument that);
-        object Visit(ArrayReference that);
-        object Visit(Assignment that);
-        object Visit(Block that);
-        object Visit(BooleanLiteral that);
-        object Visit(BooleanType that);
-        object Visit(CallStatement that);
-        object Visit(Definition that);
-        object Visit(File that);
-        object Visit(ForallStatement that);
-        object Visit(Guard that);
-        object Visit(IdentifierReference that);
-        object Visit(IdentifierType that);
-        object Visit(IntegerExpression that);
-        object Visit(IntegerLiteral that);
-        object Visit(IntegerType that);
-        object Visit(Module that);
-        object Visit(Parameter that);
-        object Visit(Program that);
-        object Visit(Statement that);
-        object Visit(StringLiteral that);
-        object Visit(TupleType that);
+        private Module[] _modules;
+        public Module[] Modules
+        {
+            get { return _modules; }
+        }
+
+        public File(Position position, Module[] modules):
+            base(NodeKind.File, position)
+        {
+            _modules = modules;
+            foreach (Module module in _modules)
+                module.Above = this;
+        }
+
+        public static File Parse(Tokens tokens)
+        {
+            Token start = tokens.Peek;
+
+            var modules = new List<Module>();
+            do
+            {
+                var module = Module.Parse(tokens);
+                modules.Add(module);
+            } while (tokens.Peek.Kind != TokenKind.EndOfFile);
+            tokens.Match(TokenKind.EndOfFile);
+
+            return new File(start.Position, modules.ToArray());
+        }
+
+        public static File[] ParseList(Tokens tokens)
+        {
+            var modules = new List<File>();
+            while (tokens.Peek.Kind != TokenKind.EndOfFile)
+            {
+                var module = File.Parse(tokens);
+                modules.Add(module);
+            }
+
+            return modules.ToArray();
+        }
+
+        public override object Visit(Visitor that)
+        {
+            return that.Visit(this);
+        }
     }
 }
+
 

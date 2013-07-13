@@ -19,10 +19,10 @@
 #endregion
 
 /** \file
- *  Defines the \c Program node, which represents an entire (single-source) GCL program.
- *
- *  \todo Make the implementation support any number of input files.
+ *  Defines the \c Program node, which represents an entire multi-source GCL program.
  */
+
+using System.Collections.Generic;       // List<T>
 
 using Bacchi.Kernel;                    // Error, Position, Tokens
 
@@ -30,27 +30,36 @@ namespace Bacchi.Syntax
 {
     public class Program: Node
     {
-        private Module[] _modules;
-        public Module[] Modules
+        private File[] _files;
+        public File[] Files
         {
-            get { return _modules; }
+            get { return _files; }
         }
 
-        public Program(Position position, Module[] modules):
-            base(NodeKind.Program, position)
+        public Program(File[] files):
+            base(NodeKind.Program, new Position())
         {
-            _modules = modules;
+            _files = files;
+            foreach (File file in _files)
+                file.Above = this;
         }
 
-        public static Program Parse(Tokens tokens)
+        public static Program Parse(string[] filenames)
         {
-            Token start = tokens.Peek;
+            // Process each input file in turn.
+            var files = new List<File>();
+            foreach (string filename in filenames)
+            {
+                // Scan the file (convert it into tokens aka words).
+                Scanner scanner = new Scanner(filename);
+                Tokens tokens = new Tokens(scanner.Tokens);
 
-            // Parse modules.
-            var modules = Module.ParseList(tokens);
-            tokens.Match(TokenKind.EndOfFile);
+                // Parse the file (convert the tokens into an Abstract Syntax Tree).
+                File file = File.Parse(tokens);
+                files.Add(file);
+            }
 
-            return new Program(start.Position, modules);
+            return new Program(files.ToArray());
         }
 
         public override object Visit(Visitor that)

@@ -672,16 +672,14 @@ namespace Bacchi.Builder
                 {
                     setup.Output + "Kernel.dll",
                     setup.Output + "Syntax.dll",
-                    setup.Output + "Reader.dll",
                     setup.Output + "Writer.dll"
                 };
 
                 // Build the various assemblies and executables that make up the compiler.
                 Build("Kernel.dll", "Kernel", new string[0], setup);
                 Build("Syntax.dll", "Syntax", root, setup);
-                Build("Reader.dll", "Reader", core, setup);
                 Build("Writer.dll", "Writer", core, setup);
-                Build("Driver.dll", "Driver", main, setup);
+                Build("Driver.exe", "Driver", main, setup);
 
                 // build documentation in ../obj/doc/html.
                 if (setup.Documentation)
