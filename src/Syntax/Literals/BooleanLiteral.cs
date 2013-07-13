@@ -51,10 +51,12 @@ namespace Bacchi.Syntax
             switch (start.Kind)
             {
                 case TokenKind.Keyword_False:
+                    tokens.Match(TokenKind.Keyword_False);
                     value = false;
                     break;
 
                 case TokenKind.Keyword_True:
+                    tokens.Match(TokenKind.Keyword_True);
                     value = true;
                     break;
 

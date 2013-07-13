@@ -65,10 +65,12 @@ namespace Bacchi.Syntax
             switch (start.Kind)
             {
                 case TokenKind.Keyword_Ref:
+                    tokens.Match(TokenKind.Keyword_Ref);
                     mode = ModeKind.Reference;
                     break;
 
                 case TokenKind.Keyword_Val:
+                    tokens.Match(TokenKind.Keyword_Val);
                     mode = ModeKind.Value;
                     break;
 

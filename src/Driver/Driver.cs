@@ -44,10 +44,10 @@ namespace Bacchi.Driver
             catch (Error that)
             {
                 System.Console.WriteLine(that.Position.ToString() + " Error: " + that.Message);
+                result = 1;
 #if TEST
                 throw;
 #endif
-                result = 1;
             }
             catch (System.Exception that)
             {

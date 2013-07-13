@@ -43,10 +43,11 @@ namespace Bacchi.Syntax
             switch (tokens.Peek.Kind)
             {
                 case TokenKind.Integer:
-                    result = IntegerExpression.Parse(tokens);
+                    result = IntegerLiteral.Parse(tokens);
                     break;
 
                 case TokenKind.Identifier:
+                    System.Console.WriteLine(tokens[1].ToString());
                     if (tokens[1].Kind != TokenKind.Symbol_Dot)
                         result = IdentifierExpression.Parse(tokens);
                     else if (tokens[2].Kind == TokenKind.Identifier)
@@ -58,6 +59,10 @@ namespace Bacchi.Syntax
                         return new TupleExpression
 #endif
                     break;
+
+                case TokenKind.Keyword_False:
+                case TokenKind.Keyword_True:
+                    return BooleanLiteral.Parse(tokens);
 
                 default:
                     throw new Error(start.Position, 0, "Expression parser sorely needs finishing up");

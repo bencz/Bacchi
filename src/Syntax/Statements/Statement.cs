@@ -39,6 +39,9 @@ namespace Bacchi.Syntax
         {
             switch (tokens.Peek.Kind)
             {
+                case TokenKind.Keyword_Do:
+                    return DoStatement.Parse(tokens);
+
                 case TokenKind.Keyword_Forall:
                     return ForallStatement.Parse(tokens);
 
@@ -72,8 +75,6 @@ namespace Bacchi.Syntax
             {
                 var statement = Statement.Parse(tokens);
                 statements.Add(statement);
-
-                tokens.Match(TokenKind.Symbol_Semicolon);
             }
 
             return statements.ToArray();
