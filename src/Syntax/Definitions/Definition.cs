@@ -50,6 +50,10 @@ namespace Bacchi.Syntax
             Definition result;
             switch (start.Kind)
             {
+                case TokenKind.Identifier:
+                    result = VariableDefinition.Parse(tokens);
+                    break;
+
                 case TokenKind.Keyword_Boolean:
                     result = BooleanDefinition.Parse(tokens);
                     break;

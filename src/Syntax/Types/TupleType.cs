@@ -56,6 +56,7 @@ namespace Bacchi.Syntax
             for (;;)
             {
                 var type = Type.ParseSymbol(tokens);
+                types.Add(type);
 
                 if (tokens.Peek.Kind == TokenKind.Symbol_BracketClose)
                     break;

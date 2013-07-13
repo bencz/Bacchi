@@ -50,10 +50,12 @@ namespace Bacchi.Syntax
         {
             Token start = tokens.Peek;
 
-            // Parse the list of types denoting fields in the tuple variable.
+            tokens.Match(TokenKind.Keyword_Typedef);
+
+            // Parse the type.
             var type = Type.Parse(tokens);
 
-            // Parse the name of the typle variable.
+            // Parse the name of the new type.
             string name = tokens.Match(TokenKind.Identifier).Text;
 
             // Create and return the new \c TypeDefinition instance.

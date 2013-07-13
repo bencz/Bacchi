@@ -33,7 +33,7 @@ namespace Bacchi.Syntax
         {
         }
 
-        public static new BooleanType Parse(Tokens tokens)
+        public static new Type Parse(Tokens tokens)
         {
             Token start = tokens.Match(TokenKind.Keyword_Boolean);
 

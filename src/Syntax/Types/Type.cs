@@ -37,23 +37,54 @@ namespace Bacchi.Syntax
         {
             Token start = tokens.Peek;
 
+            // Handle the special case of a tuple first (you cannot make arrays or ranges of tuples).
+            if (start.Kind == TokenKind.Symbol_BracketBegin)
+                return TupleType.Parse(tokens);
+
+            // Parse the basic types that can be followed by either an array or a range specifier.
+            Type result;
             switch (start.Kind)
             {
                 case TokenKind.Keyword_Boolean:
-                    return BooleanType.Parse(tokens);
+                    result = BooleanType.Parse(tokens);
+                    break;
 
                 case TokenKind.Keyword_Integer:
-                    return IntegerType.Parse(tokens);
+                    result = IntegerType.Parse(tokens);
+                    break;
 
                 case TokenKind.Identifier:
-                    return IdentifierType.Parse(tokens);
-
-                case TokenKind.Symbol_BracketBegin:
-                    return TupleType.Parse(tokens);
+                    result = IdentifierType.Parse(tokens);
+                    break;
 
                 default:
-                    throw new ParserError(start.Position, 0, "Expected type");
+                    throw new ParserError(start.Position, 0, "Expected boolean or integer type, or a type name");
             }
+
+            // Parse the optional array or range specifier
+            if (tokens.Peek.Kind == TokenKind.Keyword_Array)
+            {
+                tokens.Match(TokenKind.Keyword_Array);
+                do
+                {
+                    Token start1 = tokens.Match(TokenKind.Symbol_BracketBegin);
+                    string name = tokens.Match(TokenKind.Identifier).Text;
+                    result = new ArrayType(start1.Position, result, name);
+                    tokens.Match(TokenKind.Symbol_BracketClose);
+                } while (tokens.Peek.Kind == TokenKind.Symbol_BracketBegin);
+            }
+            else if (tokens.Peek.Kind == TokenKind.Keyword_Range)
+            {
+                Token start2 = tokens.Match(TokenKind.Keyword_Range);
+                tokens.Match(TokenKind.Symbol_BracketBegin);
+                Expression lower = Expression.Parse(tokens);
+                tokens.Match(TokenKind.Symbol_Ellipsis);
+                Expression upper = Expression.Parse(tokens);
+                tokens.Match(TokenKind.Symbol_BracketClose);
+                result = new RangeType(start2.Position, result, lower, upper);
+            }
+
+            return result;
         }
 
         public static Type ParseSymbol(Tokens tokens)

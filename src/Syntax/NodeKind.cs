@@ -50,7 +50,10 @@ namespace Bacchi.Syntax
         ProcedureDefinition,
         TupleDefinition,
         TypeDefinition,
+        VariableDefinition,
 
+        GlobalExpression,
+        IdentifierExpression,
         IntegerExpression,
 
         BooleanLiteral,
@@ -69,12 +72,16 @@ namespace Bacchi.Syntax
 
         /** A reference (assignable) to an array index. */
         ArrayReference,
+        /** A reference (assignable) to a global symbol. */
+        GlobalReference,
         /** A reference (assignable) to a symbol. */
         IdentifierReference,
 
+        ArrayType,
         BooleanType,
         IdentifierType,
         IntegerType,
+        RangeType,
         TupleType
     }
 }

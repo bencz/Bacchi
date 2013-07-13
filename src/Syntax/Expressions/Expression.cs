@@ -39,7 +39,31 @@ namespace Bacchi.Syntax
         {
             Token start = tokens.Peek;
 
-            return null;                /** \todo Finish up \c Expression.Parse(). */
+            Expression result;
+            switch (tokens.Peek.Kind)
+            {
+                case TokenKind.Integer:
+                    result = IntegerExpression.Parse(tokens);
+                    break;
+
+                case TokenKind.Identifier:
+                    if (tokens[1].Kind != TokenKind.Symbol_Dot)
+                        result = IdentifierExpression.Parse(tokens);
+                    else if (tokens[2].Kind == TokenKind.Identifier)
+                        return GlobalExpression.Parse(tokens);
+                    else
+                        result = null;
+#if false
+                    else if (tokens[2].Kind == TokenKind.Integer)
+                        return new TupleExpression
+#endif
+                    break;
+
+                default:
+                    throw new Error(start.Position, 0, "Expression parser sorely needs finishing up");
+            }
+
+            return result;
         }
 
         public static Expression[] ParseList(Tokens tokens, TokenKind terminator)
