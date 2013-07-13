@@ -47,7 +47,6 @@ namespace Bacchi.Syntax
                     break;
 
                 case TokenKind.Identifier:
-                    System.Console.WriteLine(tokens[1].ToString());
                     if (tokens[1].Kind != TokenKind.Symbol_Dot)
                         result = IdentifierExpression.Parse(tokens);
                     else if (tokens[2].Kind == TokenKind.Identifier)
