@@ -1,0 +1,57 @@
+-- The code for this sample was taken from the GCL spec.
+--
+-- A single typo was corrected:
+--
+--     result = [found, where];
+--
+-- Was changed to:
+--
+--     result := [found, where];
+
+-- Linear search.
+module search
+    private
+        const size = 10;
+        typedef integer range [1..size] sizer;
+        typedef integer range [sizer] elements;
+        sizer j;
+        elements A;
+        integer x;
+        [Boolean, integer] result;
+
+        proc search(val integer target; val elements B; ref [Boolean, integer] result)
+            integer m;
+            integer i;
+            Boolean found;
+            integer where;
+        begin
+            i := 1;
+            m := size;
+            found := false;
+            do i <= m ->
+                if B[i] = target ->
+                    found := true;
+                    where := i;
+                    i := m + 1;
+                [] B[i] # target ->
+                    i := i + 1;
+                fi;
+            od;
+            result := [found, where];
+        end;
+
+    begin
+        -- test search
+        forall j -> read A[j]; llarof;
+        read x;
+        do x # 0 ->
+            search(x, A, result);
+            if result.1 ->
+                write x, ' can be found at ', result.2;
+            [] ~result.1 ->
+                write x, ' not found';
+            fi
+            read x;
+        od;
+    end.
+

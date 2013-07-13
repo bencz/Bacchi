@@ -6,6 +6,7 @@
 *.b text
 *.bat text
 *.cs text
+*.gcl text
 *.hlp text
 *.txt text
 *.ugl text
