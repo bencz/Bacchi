@@ -752,7 +752,7 @@ namespace Bacchi.Builder
                 if (setup.Documentation)
                 {
                     string helpdir = "../obj/docs";
-                    System.Console.WriteLine("Building: {0}", helpdir);
+                    System.Console.WriteLine("Building: {0} using doxygen.exe", helpdir);
                     if (System.IO.Directory.Exists(helpdir))
                         System.IO.Directory.Delete(helpdir, true);
                     System.IO.Directory.CreateDirectory(helpdir);
