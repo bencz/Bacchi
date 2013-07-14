@@ -271,16 +271,16 @@ namespace Bacchi.Builder
             get
             {
                 if (_output == null)
-                    _output = "../obj/" + _platform + "/" + (_ship ? "ship" : "test") + "/";
+                    _output = "../obj/" + _runtime + "/" + (_ship ? "ship" : "test") + "/";
                 return _output;
             }
         }
 
         /** The target environment (Mono or NET). */
-        private string _platform = (System.Type.GetType("Mono.Runtime") != null) ? "Mono" : "NET";
-        public string Platform
+        private string _runtime = (System.Type.GetType("Mono.Runtime") != null) ? "Mono" : "NET";
+        public string Runtime
         {
-            get { return _platform; }
+            get { return _runtime; }
         }
 
         /* If true, optimizations will be enabled and debug info will be disabled. */
@@ -373,28 +373,28 @@ namespace Bacchi.Builder
                         break;
 
 
-                    case "platform":
+                    case "runtime":
                         if (data == null)
                             throw new BuildError("Missing parameter in option: " + arg);
                         switch (data.ToUpperInvariant())
                         {
                             case ".NET":
-                                _platform = ".NET";
+                                _runtime = ".NET";
                                 _compiler = "csc.exe";  /** \note Won't work on Linux... */
                                 break;
 
                             case "MONO":
-                                _platform = "Mono";
+                                _runtime = "Mono";
                                 _compiler = "mcs.bat";  /** \note Won't work on Linux, but must be used this way on Windoze. */
                                 break;
 
                             case "DOTGNU":
-                                _platform = "dotGNU";
+                                _runtime = "dotGNU";
                                 _compiler = "unknown";
                                 break;
 
                             default:
-                                throw new BuildError("Unknown platform: " + data);
+                                throw new BuildError("Unknown runtime: " + data);
                         }
                         break;
 
@@ -465,7 +465,7 @@ namespace Bacchi.Builder
             System.Console.WriteLine("    -logo           Flip 'logo' flag (default: off).");
             System.Console.WriteLine("    -mode:name      Select 'ship' or 'test' mode (default: test).");
             System.Console.WriteLine("    -output:dir     Specify output diretory (default: ../obj/...).");
-            System.Console.WriteLine("    -platform:name  Specify name of compiler platform (.NET, Mono, or dotGNU).");
+            System.Console.WriteLine("    -runtime:name   Specify name of compiler platform (.NET, Mono, or dotGNU).");
             System.Console.WriteLine("    -verbose:n      Specify verbosity level (0 to 2, default: 1).");
         }
     }
@@ -500,6 +500,37 @@ namespace Bacchi.Builder
             return System.IO.File.GetLastWriteTime(filename).Ticks;
         }
 
+        /** Return the file time of the most recently modified file in the array of file names. */
+        public static long FileDate(string[] filenames)
+        {
+            long result = 0;
+
+            foreach (string filename in filenames)
+            {
+                long date = FileDate(filename);
+                if (date > result)
+                    result = date;
+            }
+
+            return result;
+        }
+
+        /** Tries to locate the first match of the specified filename in the system search path. */
+        public static string PathFindFirst(string[] filenames)
+        {
+            string[] paths = System.Environment.GetEnvironmentVariable("PATH").Split(System.IO.Path.PathSeparator);
+            foreach (string path in paths)
+            {
+                foreach (string filename in filenames)
+                {
+                    string fullname = path + System.IO.Path.DirectorySeparatorChar + filename;
+                    if (System.IO.File.Exists(fullname))
+                        return fullname;
+                }
+            }
+            return null;
+        }
+
         /** Build the specified target (basename) from the source files in the home path.
          *
          *  The target is linked with the specified assemblies and the specified setup is used.
@@ -510,7 +541,7 @@ namespace Bacchi.Builder
 
             // compute the full output path of the target
             string target = setup.Output + basename;
-            System.Console.WriteLine("Building: {0}", target);
+            System.Console.WriteLine("Building: {0} using {1}", target, setup.Compiler);
 
             // determine if target is up-to-date and skip build if so
             string[] files = FileFind(homepath, "*.cs");
@@ -615,20 +646,20 @@ namespace Bacchi.Builder
         }
 
         /** The main program entry point. */
-        public static int Main(string[] args)
+        public static int Main(string[] arguments)
         {
             int result = 0;
 
             try
             {
                 // tell the world who's running the show
-                System.Console.WriteLine("Bacchi.Builder v0.01");
-                System.Console.WriteLine("Copyright (C) 2010-2013 Mikael Lyngvig.  All rights reserved.");
+                System.Console.WriteLine("Bacchi.Builder v0.02");
+                System.Console.WriteLine("Copyright (C) 2013 Mikael Lyngvig.  All rights reserved.");
                 System.Console.WriteLine();
 
                 // parse and check command-line parameters
                 Setup setup = new Setup();
-                setup.Parse(args);
+                setup.Parse(arguments);
                 setup.Check();
 
                 // show help, if requested by the user
@@ -680,6 +711,42 @@ namespace Bacchi.Builder
                 Build("Syntax.dll", "Syntax", root, setup);
                 Build("Writer.dll", "Writer", core, setup);
                 Build("Driver.exe", "Driver", main, setup);
+
+                // If 'ilmerge.exe' or 'ilrepack.exe' is present in the path, generate the single stand-alone ArchSetup.exe.
+                string merger = null;
+                if (setup.Runtime == "NET")
+                    merger = PathFindFirst(new string[]{ "ilmerge.exe" });
+                else if (setup.Runtime == "Mono")
+                    merger = PathFindFirst(new string[]{ "ilrepack.exe" });
+                else
+                    merger = PathFindFirst(new string[]{ "ilmerge.exe", "ilrepack.exe" });
+
+                if (merger == null)
+                    System.Console.WriteLine("Warning: Bacchi.exe not generated - neither 'ilmerge.exe' nor 'ilrepack.exe' found");
+                else
+                {
+                    string target = setup.Output + "Bacchi.exe";
+
+                    System.Console.WriteLine("Building: {0} using {1}", target, System.IO.Path.GetFileName(merger));
+
+                    List<string> files = new List<string>();
+                    files.Add(setup.Output + "Driver.exe");
+                    files.Add(setup.Output + "Kernel.dll");
+                    files.Add(setup.Output + "Syntax.dll");
+                    files.Add(setup.Output + "Writer.dll");
+
+                    if (!System.IO.File.Exists(target) || FileDate(files.ToArray()) > FileDate(target))
+                    {
+                        List<string> args = new List<string>();
+                        args.Add("-keyfile:Bacchi.snk");
+                        if (setup.Ship)
+                            args.Add("-ndebug");
+                        args.Add("-out:" + target);
+                        foreach (string file in files)
+                            args.Add(file);
+                        Process.Execute(merger, args.ToArray(), false);
+                    }
+                }
 
                 // build documentation in ../obj/doc/html.
                 if (setup.Documentation)
