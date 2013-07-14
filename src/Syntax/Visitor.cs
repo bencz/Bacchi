@@ -31,6 +31,7 @@ namespace Bacchi.Syntax
         object Visit(ArrayReference that);
         object Visit(ArrayType that);
         object Visit(Assignment that);
+        object Visit(BinaryExpression that);
         object Visit(Block that);
         object Visit(BooleanLiteral that);
         object Visit(BooleanType that);
@@ -48,11 +49,15 @@ namespace Bacchi.Syntax
         object Visit(IntegerType that);
         object Visit(Module that);
         object Visit(Parameter that);
+        object Visit(ParenthesisExpression that);
         object Visit(Program that);
         object Visit(RangeType that);
         object Visit(Statement that);
         object Visit(StringLiteral that);
+        object Visit(TupleExpression that);
+        object Visit(TupleIndexExpression that);
         object Visit(TupleType that);
+        object Visit(UnaryExpression that);
     }
 }
 

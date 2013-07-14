@@ -19,43 +19,37 @@
 #endregion
 
 /** \file
- *  Defines the \c GlobalExpression class, which represents a global expression (module.name).
+ *  Defines the \c ParenthesisExpression class, which represents a parenthesized expression.
  */
 
 using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    public class GlobalExpression: Expression
+    public class ParenthesisExpression: Expression
     {
-        private string _module;
-        public string Module
+        private Expression _expression;
+        public Expression Expression
         {
-            get { return _module; }
+            get { return _expression; }
         }
 
-        private string _name;
-        public string Name
+        public ParenthesisExpression(Position position, Expression expression):
+            base(NodeKind.ParenthesisExpression, position)
         {
-            get { return _name; }
+            _expression = expression;
+            _expression.Above = this;
         }
 
-        public GlobalExpression(Position position, string module, string name):
-            base(NodeKind.GlobalExpression, position)
-        {
-            _module = module;
-            _name = name;
-        }
-
-        public static new Expression Parse(Tokens tokens)
+        public static new ParenthesisExpression Parse(Tokens tokens)
         {
             Token start = tokens.Peek;
 
-            string module = tokens.Match(TokenKind.Identifier).Text;
-            tokens.Match(TokenKind.Symbol_Dot);
-            string name = tokens.Match(TokenKind.Identifier).Text;
+            tokens.Match(TokenKind.Symbol_ParenthesisBegin);
+            Expression expression = Expression.Parse(tokens);
+            tokens.Match(TokenKind.Symbol_ParenthesisClose);
 
-            return new GlobalExpression(start.Position, module, name);
+            return new ParenthesisExpression(start.Position, expression);
         }
 
         public override object Visit(Visitor that)
@@ -64,4 +58,7 @@ namespace Bacchi.Syntax
         }
     }
 }
+
+
+
 

@@ -19,44 +19,55 @@
 #endregion
 
 /** \file
- *  Defines the \c GlobalExpression class, which represents a global expression (module.name).
+ *  Defines the \c UnaryExpression class, which represents is only used for a logical \b not operation.
  */
 
 using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    public class GlobalExpression: Expression
+    public class UnaryExpression: Expression
     {
-        private string _module;
-        public string Module
+        private UnaryKind _operator;
+        public UnaryKind Operator
         {
-            get { return _module; }
+            get { return _operator; }
         }
 
-        private string _name;
-        public string Name
+        private Expression _expression;
+        public Expression Expression
         {
-            get { return _name; }
+            get { return _expression; }
         }
 
-        public GlobalExpression(Position position, string module, string name):
-            base(NodeKind.GlobalExpression, position)
+        public UnaryExpression(Position position, UnaryKind @operator, Expression expression):
+            base(NodeKind.UnaryExpression, position)
         {
-            _module = module;
-            _name = name;
+            _operator = @operator;
+
+            _expression = expression;
+            _expression.Above = this;
         }
 
-        public static new Expression Parse(Tokens tokens)
+        public static UnaryKind Convert(TokenKind kind)
         {
-            Token start = tokens.Peek;
+            switch (kind)
+            {
+                case TokenKind.Operator_Add:
+                    return UnaryKind.Plus;
 
-            string module = tokens.Match(TokenKind.Identifier).Text;
-            tokens.Match(TokenKind.Symbol_Dot);
-            string name = tokens.Match(TokenKind.Identifier).Text;
+                case TokenKind.Operator_Not:
+                    return UnaryKind.Not;
 
-            return new GlobalExpression(start.Position, module, name);
+                case TokenKind.Operator_Subtract:
+                    return UnaryKind.Minus;
+
+                default:
+                    throw new InternalError("Unknown unary operator: " + kind.ToString());
+            }
         }
+
+        /** \note Parsing is done in Expression.Parse(). */
 
         public override object Visit(Visitor that)
         {

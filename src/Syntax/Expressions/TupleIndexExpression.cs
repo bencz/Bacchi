@@ -19,44 +19,37 @@
 #endregion
 
 /** \file
- *  Defines the \c GlobalExpression class, which represents a global expression (module.name).
+ *  Defines the \c TupleIndexExpression class, which represents a tuple indexing expression (tuple.1).
  */
 
 using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    public class GlobalExpression: Expression
+    public class TupleIndexExpression: Expression
     {
-        private string _module;
-        public string Module
+        private Expression _prefix;
+        public Expression Prefix
         {
-            get { return _module; }
+            get { return _prefix; }
         }
 
-        private string _name;
-        public string Name
+        private int _index;
+        public int Index
         {
-            get { return _name; }
+            get { return _index; }
         }
 
-        public GlobalExpression(Position position, string module, string name):
-            base(NodeKind.GlobalExpression, position)
+        public TupleIndexExpression(Position position, Expression prefix, int index):
+            base(NodeKind.TupleIndexExpression, position)
         {
-            _module = module;
-            _name = name;
+            _prefix = prefix;
+            _prefix.Above = this;
+
+            _index = index;
         }
 
-        public static new Expression Parse(Tokens tokens)
-        {
-            Token start = tokens.Peek;
-
-            string module = tokens.Match(TokenKind.Identifier).Text;
-            tokens.Match(TokenKind.Symbol_Dot);
-            string name = tokens.Match(TokenKind.Identifier).Text;
-
-            return new GlobalExpression(start.Position, module, name);
-        }
+        /** \note Parsing is done in the \c Expression class. */
 
         public override object Visit(Visitor that)
         {
@@ -64,4 +57,5 @@ namespace Bacchi.Syntax
         }
     }
 }
+
 

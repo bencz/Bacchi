@@ -35,7 +35,12 @@ namespace Bacchi.Syntax
         {
         }
 
-        public static Expression Parse(Tokens tokens)
+        public static Expression ParseRelational(Tokens tokens)
+        {
+            return null;
+        }
+
+        public static Expression ParseFactor(Tokens tokens)
         {
             Token start = tokens.Peek;
 
@@ -47,24 +52,105 @@ namespace Bacchi.Syntax
                     break;
 
                 case TokenKind.Identifier:
-                    if (tokens[1].Kind != TokenKind.Symbol_Dot)
-                        result = IdentifierExpression.Parse(tokens);
-                    else if (tokens[2].Kind == TokenKind.Identifier)
-                        return GlobalExpression.Parse(tokens);
-                    else
-                        result = null;
-#if false
-                    else if (tokens[2].Kind == TokenKind.Integer)
-                        return new TupleExpression
-#endif
+                    result = IdentifierExpression.Parse(tokens);
                     break;
 
                 case TokenKind.Keyword_False:
                 case TokenKind.Keyword_True:
-                    return BooleanLiteral.Parse(tokens);
+                    result = BooleanLiteral.Parse(tokens);
+                    break;
+
+                case TokenKind.Symbol_BracketBegin:
+                    result = TupleExpression.Parse(tokens);
+                    break;
+
+                case TokenKind.Operator_Not:
+                    result = new UnaryExpression(start.Position, UnaryKind.Not, ParseFactor(tokens));
+                    break;
+
+                case TokenKind.Symbol_ParenthesisBegin:
+                    result = ParenthesisExpression.Parse(tokens);
+                    break;
+
+                case TokenKind.String:
+                    result = StringLiteral.Parse(tokens);
+                    break;
 
                 default:
                     throw new Error(start.Position, 0, "Expression parser sorely needs finishing up");
+            }
+
+            return result;
+        }
+
+        private enum SignKind
+        {
+            None,
+            Minus,
+            Plus
+        };
+
+        public static Expression ParseSimple(Tokens tokens)
+        {
+            Token start = tokens.Peek;
+
+            // Parse optional unary plus or minus.
+            UnaryKind sign = UnaryKind.Not;     /** \note Initialize \c sign with an "invalid" value. */
+            if (tokens.Peek.Kind == TokenKind.Operator_Subtract)
+            {
+                tokens.Match(TokenKind.Operator_Subtract);
+                sign = UnaryKind.Minus;
+            }
+            else if (tokens.Peek.Kind == TokenKind.Operator_Add)
+            {
+                tokens.Match(TokenKind.Operator_Add);
+                sign = UnaryKind.Plus;
+            }
+
+            // Parse first term.
+            Expression result = Expression.ParseTerm(tokens);
+
+            // Parse following adding operators and terms, if any.
+            while (tokens.Peek.Kind == TokenKind.Operator_Add || tokens.Peek.Kind == TokenKind.Operator_Subtract)
+            {
+                Token @operator = tokens.Match(tokens.Peek.Kind);
+                BinaryKind kind = BinaryExpression.Convert(@operator.Kind);
+                Expression other = Expression.ParseTerm(tokens);
+                result = new BinaryExpression(@operator.Position, kind, result, other);
+            }
+
+            // Wrap the result in an unary minus or plus operator, if applicable.
+            if (sign == UnaryKind.Minus || sign == UnaryKind.Plus)
+                result = new UnaryExpression(start.Position, UnaryKind.Minus, result);
+
+            return result;
+        }
+
+        public static Expression ParseTerm(Tokens tokens)
+        {
+            return ParseFactor(tokens);
+        }
+
+        public static Expression Parse(Tokens tokens)
+        {
+            Token start = tokens.Peek;
+
+            Expression result = Expression.ParseSimple(tokens);
+            switch (tokens.Peek.Kind)
+            {
+                case TokenKind.Relational_Equality:
+                case TokenKind.Relational_Difference:
+                case TokenKind.Relational_GreaterEqual:
+                case TokenKind.Relational_GreaterThan:
+                case TokenKind.Relational_LessEqual:
+                case TokenKind.Relational_LessThan:
+                    BinaryKind @operator = BinaryExpression.Convert(tokens.Match(tokens.Peek.Kind).Kind);
+                    Expression other = Expression.ParseSimple(tokens);
+                    result = new BinaryExpression(start.Position, @operator, result, other);
+                    break;
+
+                default:
+                    break;
             }
 
             return result;

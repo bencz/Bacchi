@@ -19,49 +19,17 @@
 #endregion
 
 /** \file
- *  Defines the \c GlobalExpression class, which represents a global expression (module.name).
+ *  Defines the \c UnaryKind enumeration, which defines a value for each kind of unary operator that GCL supports.
  */
-
-using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    public class GlobalExpression: Expression
+    public enum UnaryKind
     {
-        private string _module;
-        public string Module
-        {
-            get { return _module; }
-        }
-
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-        }
-
-        public GlobalExpression(Position position, string module, string name):
-            base(NodeKind.GlobalExpression, position)
-        {
-            _module = module;
-            _name = name;
-        }
-
-        public static new Expression Parse(Tokens tokens)
-        {
-            Token start = tokens.Peek;
-
-            string module = tokens.Match(TokenKind.Identifier).Text;
-            tokens.Match(TokenKind.Symbol_Dot);
-            string name = tokens.Match(TokenKind.Identifier).Text;
-
-            return new GlobalExpression(start.Position, module, name);
-        }
-
-        public override object Visit(Visitor that)
-        {
-            return that.Visit(this);
-        }
+        Minus,
+        Not,
+        Plus
     }
 }
+
 

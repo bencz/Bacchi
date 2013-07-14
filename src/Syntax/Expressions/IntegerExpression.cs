@@ -42,7 +42,9 @@ namespace Bacchi.Syntax
 
         public static new IntegerExpression Parse(Tokens tokens)
         {
-            Token start = tokens.Match(TokenKind.Integer);
+            Token start = tokens.Peek;
+
+            tokens.Match(TokenKind.Integer);
 
             return new IntegerExpression(start.Position, int.Parse(start.Text));
         }
