@@ -35,11 +35,6 @@ namespace Bacchi.Syntax
         {
         }
 
-        public static Expression ParseRelational(Tokens tokens)
-        {
-            return null;
-        }
-
         public static Expression ParseFactor(Tokens tokens)
         {
             Token start = tokens.Peek;
@@ -83,13 +78,42 @@ namespace Bacchi.Syntax
             return result;
         }
 
-        private enum SignKind
+        /** Returns \c true if the specified token kind is a relational operator (=, #, >=, >, <=, <). */
+        private static bool IsRelationalOperator(TokenKind kind)
         {
-            None,
-            Minus,
-            Plus
-        };
+            switch (kind)
+            {
+                case TokenKind.Relational_Equality:
+                case TokenKind.Relational_Difference:
+                case TokenKind.Relational_GreaterEqual:
+                case TokenKind.Relational_GreaterThan:
+                case TokenKind.Relational_LessEqual:
+                case TokenKind.Relational_LessThan:
+                    return true;
 
+                default:
+                    return false;
+            }
+        }
+
+        public static Expression ParseRelational(Tokens tokens)
+        {
+            Token start = tokens.Peek;
+
+            Expression result = Expression.ParseSimple(tokens);
+
+            if (IsRelationalOperator(tokens.Peek.Kind))
+            {
+                Token token = tokens.Match(tokens.Peek.Kind);
+                BinaryKind @operator = BinaryExpression.Convert(token.Kind);
+                Expression other = Expression.ParseSimple(tokens);
+                result = new BinaryExpression(token.Position, @operator, result, other);
+            }
+
+            return result;
+        }
+
+        /** Parses a simple expression. */
         public static Expression ParseSimple(Tokens tokens)
         {
             Token start = tokens.Peek;
@@ -113,44 +137,63 @@ namespace Bacchi.Syntax
             // Parse following adding operators and terms, if any.
             while (tokens.Peek.Kind == TokenKind.Operator_Add || tokens.Peek.Kind == TokenKind.Operator_Subtract)
             {
-                Token @operator = tokens.Match(tokens.Peek.Kind);
-                BinaryKind kind = BinaryExpression.Convert(@operator.Kind);
+                Token token = tokens.Match(tokens.Peek.Kind);
+                BinaryKind @operator = BinaryExpression.Convert(token.Kind);
                 Expression other = Expression.ParseTerm(tokens);
-                result = new BinaryExpression(@operator.Position, kind, result, other);
+                result = new BinaryExpression(token.Position, @operator, result, other);
             }
 
             // Wrap the result in an unary minus or plus operator, if applicable.
             if (sign == UnaryKind.Minus || sign == UnaryKind.Plus)
-                result = new UnaryExpression(start.Position, UnaryKind.Minus, result);
+                result = new UnaryExpression(start.Position, sign, result);
 
             return result;
         }
 
+        /** Returns \c true if the specified token kind is a multiplication operator (*, /, and \\). */
+        private static bool IsMultiplyOperator(TokenKind kind)
+        {
+            switch (kind)
+            {
+                case TokenKind.Operator_Multiply:
+                case TokenKind.Operator_Divide:
+                case TokenKind.Operator_Remainder:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         public static Expression ParseTerm(Tokens tokens)
         {
-            return ParseFactor(tokens);
+            // Parse first factor.
+            Expression result = Expression.ParseFactor(tokens);
+
+            // Parse following multiplication operators and factors, if any.
+            while (IsMultiplyOperator(tokens.Peek.Kind))
+            {
+                Token token = tokens.Match(tokens.Peek.Kind);
+                BinaryKind @operator = BinaryExpression.Convert(token.Kind);
+                Expression other = Expression.ParseFactor(tokens);
+                result = new BinaryExpression(token.Position, @operator, result, other);
+            }
+
+            return result;
         }
 
         public static Expression Parse(Tokens tokens)
         {
-            Token start = tokens.Peek;
+            // Parse first relational expression.
+            Expression result = Expression.ParseRelational(tokens);
 
-            Expression result = Expression.ParseSimple(tokens);
-            switch (tokens.Peek.Kind)
+            // Parse following binary operators and relational expressions, if any.
+            while (tokens.Peek.Kind == TokenKind.Operator_And || tokens.Peek.Kind == TokenKind.Operator_Or)
             {
-                case TokenKind.Relational_Equality:
-                case TokenKind.Relational_Difference:
-                case TokenKind.Relational_GreaterEqual:
-                case TokenKind.Relational_GreaterThan:
-                case TokenKind.Relational_LessEqual:
-                case TokenKind.Relational_LessThan:
-                    BinaryKind @operator = BinaryExpression.Convert(tokens.Match(tokens.Peek.Kind).Kind);
-                    Expression other = Expression.ParseSimple(tokens);
-                    result = new BinaryExpression(start.Position, @operator, result, other);
-                    break;
-
-                default:
-                    break;
+                Token token = tokens.Match(tokens.Peek.Kind);
+                BinaryKind @operator = BinaryExpression.Convert(token.Kind);
+                Expression other = Expression.ParseRelational(tokens);
+                result = new BinaryExpression(token.Position, @operator, result, other);
             }
 
             return result;
