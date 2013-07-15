@@ -518,6 +518,17 @@ namespace Bacchi.Builder
         /** Tries to locate the first match of the specified filename in the system search path. */
         public static string PathFindFirst(string[] filenames)
         {
+            // Check if the file(s) are present in the current directory (Windows only).
+            if (System.IO.Path.DirectorySeparatorChar == '\\')
+            {
+                foreach (string filename in filenames)
+                {
+                    if (System.IO.File.Exists(filename))
+                        return System.IO.Path.GetFullPath(filename);
+                }
+            }
+
+            // Check if the file(s) are present in the list of directories defined by the PATH environment variable.
             string[] paths = System.Environment.GetEnvironmentVariable("PATH").Split(System.IO.Path.PathSeparator);
             foreach (string path in paths)
             {
