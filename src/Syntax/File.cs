@@ -30,13 +30,19 @@ namespace Bacchi.Syntax
 {
     public class File: Node
     {
+        private string _filename;
+        public string Filename
+        {
+            get { return _filename; }
+        }
+
         private Module[] _modules;
         public Module[] Modules
         {
             get { return _modules; }
         }
 
-        public File(Position position, Module[] modules):
+        public File(Position position, string filename, Module[] modules):
             base(NodeKind.File, position)
         {
             _modules = modules;
@@ -56,7 +62,7 @@ namespace Bacchi.Syntax
             } while (tokens.Peek.Kind != TokenKind.EndOfFile);
             tokens.Match(TokenKind.EndOfFile);
 
-            return new File(start.Position, modules.ToArray());
+            return new File(start.Position, start.Position.File, modules.ToArray());
         }
 
         public static File[] ParseList(Tokens tokens)
