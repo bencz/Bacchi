@@ -45,6 +45,8 @@ namespace Bacchi.Syntax
         public File(Position position, string filename, Module[] modules):
             base(NodeKind.File, position)
         {
+            _filename = filename;
+
             _modules = modules;
             foreach (Module module in _modules)
                 module.Above = this;
