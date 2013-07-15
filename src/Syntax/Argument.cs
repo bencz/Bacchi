@@ -28,59 +28,28 @@ using Bacchi.Kernel;                    // Error, Position
 
 namespace Bacchi.Syntax
 {
-    public class Argument: Node
+    public class Argument: Expression
     {
-        private ModeKind _mode;
-        public ModeKind Mode
+        private Expression _value;
+        public Expression Value
         {
-            get { return _mode; }
+            get { return _value; }
         }
 
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-        }
-
-        private Type _type;
-        public Type Type
-        {
-            get { return _type; }
-        }
-
-        public Argument(Position position, ModeKind mode, string name, Type type):
+        public Argument(Position position, Expression value):
             base(NodeKind.Argument, position)
         {
-            _mode = mode;
-            _name = name;
-            _type = type;
-            _type.Above = this;
+            _value = value;
+            _value.Above = this;
         }
 
-        public static Argument Parse(Tokens tokens)
+        public static new Argument Parse(Tokens tokens)
         {
             Token start = tokens.Peek;
 
-            ModeKind mode;
-            switch (start.Kind)
-            {
-                case TokenKind.Keyword_Ref:
-                    mode = ModeKind.Reference;
-                    break;
+            Expression value = Expression.Parse(tokens);
 
-                case TokenKind.Keyword_Val:
-                    mode = ModeKind.Value;
-                    break;
-
-                default:
-                    throw new ParserError(start.Position, 0, "Expected 'ref' or 'val' keyword");
-            }
-
-            Type type = Type.Parse(tokens);
-
-            string name = tokens.Match(TokenKind.Identifier).Text;
-
-            return new Argument(start.Position, mode, name, type);
+            return new Argument(start.Position, value);
         }
 
         public static Argument[] ParseList(Tokens tokens)
@@ -88,20 +57,19 @@ namespace Bacchi.Syntax
             Token start = tokens.Peek;
 
             tokens.Match(TokenKind.Symbol_ParenthesisBegin);
+
             var arguments = new List<Argument>();
-            if (tokens.Peek.Kind != TokenKind.Symbol_ParenthesisClose)
+            var argument = Argument.Parse(tokens);
+            arguments.Add(argument);
+
+            while (tokens.Peek.Kind == TokenKind.Symbol_Comma)
             {
-                var argument = Argument.Parse(tokens);
+                tokens.Match(TokenKind.Symbol_Comma);
+
+                argument = Argument.Parse(tokens);
                 arguments.Add(argument);
-
-                while (tokens.Peek.Kind == TokenKind.Symbol_Comma)
-                {
-                    tokens.Match(TokenKind.Symbol_Comma);
-
-                    argument = Argument.Parse(tokens);
-                    arguments.Add(argument);
-                }
             }
+
             tokens.Match(TokenKind.Symbol_ParenthesisClose);
 
             return arguments.ToArray();

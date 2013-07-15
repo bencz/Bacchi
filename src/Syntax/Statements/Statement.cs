@@ -68,10 +68,10 @@ namespace Bacchi.Syntax
             }
         }
 
-        public static Statement[] ParseList(Tokens tokens, TokenKind terminator)
+        public static Statement[] ParseList(Tokens tokens, TokenKind terminator1, TokenKind terminator2)
         {
             var statements = new List<Statement>();
-            while (tokens.Peek.Kind != terminator)
+            while (tokens.Peek.Kind != terminator1 && tokens.Peek.Kind != terminator2)
             {
                 var statement = Statement.Parse(tokens);
                 statements.Add(statement);

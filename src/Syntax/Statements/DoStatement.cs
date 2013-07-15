@@ -49,6 +49,7 @@ namespace Bacchi.Syntax
             tokens.Match(TokenKind.Keyword_Do);
             var guards = Guard.ParseList(tokens, TokenKind.Keyword_Od);
             tokens.Match(TokenKind.Keyword_Od);
+            tokens.Match(TokenKind.Symbol_Semicolon);
 
             return new DoStatement(start.Position, guards);
         }

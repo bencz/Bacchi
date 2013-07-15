@@ -55,6 +55,7 @@ namespace Bacchi.Syntax
 
             string name = tokens.Match(TokenKind.Identifier).Text;
             var arguments = Argument.ParseList(tokens);
+            tokens.Match(TokenKind.Symbol_Semicolon);
 
             return new CallStatement(start.Position, name, arguments);
         }

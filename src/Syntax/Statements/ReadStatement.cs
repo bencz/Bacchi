@@ -48,6 +48,7 @@ namespace Bacchi.Syntax
 
             tokens.Match(TokenKind.Keyword_Read);
             var references = Reference.ParseList(tokens, TokenKind.Symbol_Semicolon);
+            tokens.Match(TokenKind.Symbol_Semicolon);
 
             return new ReadStatement(start.Position, references);
         }

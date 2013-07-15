@@ -58,7 +58,7 @@ namespace Bacchi.Syntax
 
             var expression = Expression.Parse(tokens);
             tokens.Match(TokenKind.Symbol_Then);
-            var statements = Statement.ParseList(tokens, terminator);
+            var statements = Statement.ParseList(tokens, terminator, TokenKind.Symbol_Brackets);
 
             return new Guard(start.Position, expression, statements);
         }
@@ -74,6 +74,7 @@ namespace Bacchi.Syntax
 
             while (tokens.Peek.Kind == TokenKind.Symbol_Brackets)
             {
+                tokens.Match(TokenKind.Symbol_Brackets);
                 guard = Guard.Parse(tokens, terminator);
                 guards.Add(guard);
             }

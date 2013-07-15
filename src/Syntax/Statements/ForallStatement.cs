@@ -56,7 +56,9 @@ namespace Bacchi.Syntax
             tokens.Match(TokenKind.Keyword_Forall);
             string variable = tokens.Match(TokenKind.Identifier).Text;
             tokens.Match(TokenKind.Symbol_Then);
-            Statement[] statements = Statement.ParseList(tokens, TokenKind.Keyword_Llarof);
+            Statement[] statements = Statement.ParseList(tokens, TokenKind.Keyword_Llarof, TokenKind.Symbol_Brackets);
+            tokens.Match(TokenKind.Keyword_Llarof);
+            tokens.Match(TokenKind.Symbol_Semicolon);
 
             return new ForallStatement(start.Position, variable, statements);
         }

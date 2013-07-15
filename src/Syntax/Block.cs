@@ -58,7 +58,7 @@ namespace Bacchi.Syntax
 
             var definitions = Definition.ParseList(tokens, TokenKind.Keyword_Begin);
             tokens.Match(TokenKind.Keyword_Begin);
-            var statements = Statement.ParseList(tokens, TokenKind.Keyword_End);
+            var statements = Statement.ParseList(tokens, TokenKind.Keyword_End, TokenKind.None);
             tokens.Match(TokenKind.Keyword_End);
 
             return new Block(start.Position, definitions, statements);
