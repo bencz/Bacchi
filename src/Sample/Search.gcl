@@ -50,7 +50,7 @@ module search
                 write x, ' can be found at ', result.2;
             [] ~result.1 ->
                 write x, ' not found';
-            fi
+            fi;
             read x;
         od;
     end.
