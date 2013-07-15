@@ -46,7 +46,9 @@ namespace Bacchi.Syntax
         {
             Token start = tokens.Peek;
 
+            tokens.Match(TokenKind.Keyword_Write);
             var expressions = Expression.ParseList(tokens, TokenKind.Symbol_Semicolon);
+            tokens.Match(TokenKind.Symbol_Semicolon);
 
             return new WriteStatement(start.Position, expressions);
         }
