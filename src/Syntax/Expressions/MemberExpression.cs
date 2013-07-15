@@ -19,46 +19,44 @@
 #endregion
 
 /** \file
- *  Defines the \c Visitor interface, which is used to traverse the Abstract Syntax Tree (AST).
+ *  Defines the \c MemberExpression class, which represents a member expression (name.field).
+ *
+ *  \note GCL allows the field part to be either an identifier or an integer.
  */
+
+using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    /** Interface used by the Visitor pattern. */
-    public interface Visitor
+    public class MemberExpression: Expression
     {
-        object Visit(Argument that);
-        object Visit(ArrayExpression that);
-        object Visit(ArrayReference that);
-        object Visit(ArrayType that);
-        object Visit(Assignment that);
-        object Visit(BinaryExpression that);
-        object Visit(Block that);
-        object Visit(BooleanLiteral that);
-        object Visit(BooleanType that);
-        object Visit(CallStatement that);
-        object Visit(Definition that);
-        object Visit(File that);
-        object Visit(ForallStatement that);
-        object Visit(Guard that);
-        object Visit(IdentifierExpression that);
-        object Visit(IdentifierReference that);
-        object Visit(IdentifierType that);
-        object Visit(IntegerExpression that);
-        object Visit(IntegerLiteral that);
-        object Visit(IntegerType that);
-        object Visit(MemberExpression that);
-        object Visit(Module that);
-        object Visit(Parameter that);
-        object Visit(ParenthesisExpression that);
-        object Visit(Program that);
-        object Visit(RangeType that);
-        object Visit(Statement that);
-        object Visit(StringLiteral that);
-        object Visit(TupleExpression that);
-        object Visit(TupleIndexExpression that);
-        object Visit(TupleType that);
-        object Visit(UnaryExpression that);
+        private Expression _prefix;
+        public Expression Prefix
+        {
+            get { return _prefix; }
+        }
+
+        private string _field;
+        public string Field
+        {
+            get { return _field; }
+        }
+
+        public MemberExpression(Position position, Expression prefix, string field):
+            base(NodeKind.MemberExpression, position)
+        {
+            _prefix = prefix;
+            _prefix.Above = this;
+
+            _field = field;
+        }
+
+        /** Parsing is done in \c Expression.Parse(). */
+
+        public override object Visit(Visitor that)
+        {
+            return that.Visit(this);
+        }
     }
 }
 

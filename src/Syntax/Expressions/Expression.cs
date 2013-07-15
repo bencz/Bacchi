@@ -47,8 +47,40 @@ namespace Bacchi.Syntax
                     break;
 
                 case TokenKind.Identifier:
-                    result = IdentifierExpression.Parse(tokens);
+                {
+                    Token first = tokens.Match(TokenKind.Identifier);
+                    result = new IdentifierExpression(first.Position, first.Text);
+
+                    // Parse optional list of array indexers ([]) and membership operators (.).
+                    while (tokens.Peek.Kind == TokenKind.Symbol_Dot || tokens.Peek.Kind == TokenKind.Symbol_BracketBegin)
+                    {
+                        if (tokens.Peek.Kind == TokenKind.Symbol_Dot)
+                        {
+                            tokens.Match(TokenKind.Symbol_Dot);
+                            switch (tokens.Peek.Kind)
+                            {
+                                case TokenKind.Identifier:
+                                case TokenKind.Integer:
+                                {
+                                    Token other = tokens.Match(tokens.Peek.Kind);
+                                    result = new MemberExpression(first.Position, result, other.Text);
+                                    break;
+                                }
+
+                                default:
+                                    throw new Error(tokens.Peek.Position, 0, "Expected integer or identifier");
+                            }
+                        }
+                        else
+                        {
+                            Token bracket = tokens.Match(TokenKind.Symbol_BracketBegin);
+                            Expression other = Expression.Parse(tokens);
+                            result = new ArrayExpression(bracket.Position, result, other);
+                            tokens.Match(TokenKind.Symbol_BracketClose);
+                        }
+                    }
                     break;
+                }
 
                 case TokenKind.Keyword_False:
                 case TokenKind.Keyword_True:
@@ -60,6 +92,7 @@ namespace Bacchi.Syntax
                     break;
 
                 case TokenKind.Operator_Not:
+                    tokens.Match(TokenKind.Operator_Not);
                     result = new UnaryExpression(start.Position, UnaryKind.Not, ParseFactor(tokens));
                     break;
 
@@ -72,7 +105,7 @@ namespace Bacchi.Syntax
                     break;
 
                 default:
-                    throw new Error(start.Position, 0, "Expression parser sorely needs finishing up");
+                    throw new Error(start.Position, 0, "Expected expression factor");
             }
 
             return result;

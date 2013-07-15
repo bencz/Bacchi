@@ -19,44 +19,38 @@
 #endregion
 
 /** \file
- *  Defines the \c GlobalExpression class, which represents a global expression (module.name).
+ *  Defines the \c ArrayExpression class, which represents a bracketed array index expression (\c [index]).
  */
 
 using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    public class GlobalExpression: Expression
+    public class ArrayExpression: Expression
     {
-        private string _module;
-        public string Module
+        private Expression _array;
+        public Expression Array
         {
-            get { return _module; }
+            get { return _array; }
         }
 
-        private string _name;
-        public string Name
+        private Expression _index;
+        public Expression Index
         {
-            get { return _name; }
+            get { return _index; }
         }
 
-        public GlobalExpression(Position position, string module, string name):
-            base(NodeKind.GlobalExpression, position)
+        public ArrayExpression(Position position, Expression array, Expression index):
+            base(NodeKind.ArrayExpression, position)
         {
-            _module = module;
-            _name = name;
+            _array = array;
+            _array.Above = this;
+
+            _index = index;
+            _index.Above = this;
         }
 
-        public static new Expression Parse(Tokens tokens)
-        {
-            Token start = tokens.Peek;
-
-            string module = tokens.Match(TokenKind.Identifier).Text;
-            tokens.Match(TokenKind.Symbol_Dot);
-            string name = tokens.Match(TokenKind.Identifier).Text;
-
-            return new GlobalExpression(start.Position, module, name);
-        }
+        /** Parsing is done in \c Expression.Parse(). */
 
         public override object Visit(Visitor that)
         {
@@ -64,4 +58,7 @@ namespace Bacchi.Syntax
         }
     }
 }
+
+
+
 

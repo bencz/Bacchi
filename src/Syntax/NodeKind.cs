@@ -52,10 +52,11 @@ namespace Bacchi.Syntax
         TypeDefinition,
         VariableDefinition,
 
+        ArrayExpression,
         BinaryExpression,
-        GlobalExpression,
         IdentifierExpression,
         IntegerExpression,
+        MemberExpression,
         ParenthesisExpression,
         RelationalExpression,
         TupleExpression,
