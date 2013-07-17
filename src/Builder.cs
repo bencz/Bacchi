@@ -714,12 +714,14 @@ namespace Bacchi.Builder
                 {
                     setup.Output + "Kernel.dll",
                     setup.Output + "Syntax.dll",
+                    setup.Output + "Passes.dll",
                     setup.Output + "Writer.dll"
                 };
 
                 // Build the various assemblies and executables that make up the compiler.
                 Build("Kernel.dll", "Kernel", new string[0], setup);
                 Build("Syntax.dll", "Syntax", root, setup);
+                Build("Passes.dll", "Passes", core, setup);
                 Build("Writer.dll", "Writer", core, setup);
                 Build("Driver.exe", "Driver", main, setup);
 
@@ -743,6 +745,7 @@ namespace Bacchi.Builder
                     List<string> files = new List<string>();
                     files.Add(setup.Output + "Driver.exe");
                     files.Add(setup.Output + "Kernel.dll");
+                    files.Add(setup.Output + "Passes.dll");
                     files.Add(setup.Output + "Syntax.dll");
                     files.Add(setup.Output + "Writer.dll");
 

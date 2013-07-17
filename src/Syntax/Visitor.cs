@@ -34,16 +34,18 @@ namespace Bacchi.Syntax
         object Visit(Assignment that);
         object Visit(BinaryExpression that);
         object Visit(Block that);
+        object Visit(BooleanDefinition that);
         object Visit(BooleanLiteral that);
         object Visit(BooleanType that);
         object Visit(CallStatement that);
-        object Visit(Definition that);
+        object Visit(ConstantDefinition that);
         object Visit(File that);
         object Visit(ForallStatement that);
         object Visit(Guard that);
         object Visit(IdentifierExpression that);
         object Visit(IdentifierReference that);
         object Visit(IdentifierType that);
+        object Visit(IntegerDefinition that);
         object Visit(IntegerExpression that);
         object Visit(IntegerLiteral that);
         object Visit(IntegerType that);
@@ -51,14 +53,20 @@ namespace Bacchi.Syntax
         object Visit(Module that);
         object Visit(Parameter that);
         object Visit(ParenthesisExpression that);
+        object Visit(ProcedureCompletion that);
+        object Visit(ProcedureDeclaration that);
+        object Visit(ProcedureDefinition that);
         object Visit(Program that);
         object Visit(RangeType that);
         object Visit(Statement that);
         object Visit(StringLiteral that);
+        object Visit(TupleDefinition that);
         object Visit(TupleExpression that);
         object Visit(TupleIndexExpression that);
         object Visit(TupleType that);
+        object Visit(TypeDefinition that);
         object Visit(UnaryExpression that);
+        object Visit(VariableDefinition that);
     }
 }
 

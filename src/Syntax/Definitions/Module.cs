@@ -28,14 +28,8 @@ using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    public class Module: Node
+    public class Module: Definition
     {
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-        }
-
         private Definition[] _definitions;
         public Definition[] Definitions
         {
@@ -53,10 +47,8 @@ namespace Bacchi.Syntax
          *  \note \c block may be null, if there's no private part (the module contains only public definitions).
          */
         public Module(Position position, string name, Definition[] definitions, Block block):
-            base(NodeKind.Module, position)
+            base(NodeKind.Module, position, name)
         {
-            _name = name;
-
             _definitions = definitions;
             foreach (Definition definition in _definitions)
                 definition.Above = this;
@@ -66,7 +58,7 @@ namespace Bacchi.Syntax
                 _block.Above = this;
         }
 
-        public static Module Parse(Tokens tokens)
+        public static new Module Parse(Tokens tokens)
         {
             Token start = tokens.Match(TokenKind.Keyword_Module);
             string name = tokens.Match(TokenKind.Identifier).Text;

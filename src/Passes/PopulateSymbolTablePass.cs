@@ -19,54 +19,24 @@
 #endregion
 
 /** \file
- *  Defines the \c Visitor interface, which is used to traverse the Abstract Syntax Tree (AST).
+ *  Defines the \c PopulateSymbolTablePass class, which traverses the tree and builds the symbol table.
  */
 
 using Bacchi.Syntax;
 
-namespace Bacchi.Writer
+namespace Bacchi.Passes
 {
     /** Dumper used to dump the Abstract Syntax Tree (AST) to a file. */
-    public class Dumper: Visitor
+    public class PopulateSymbolTablePass: Visitor
     {
-        private System.IO.StreamWriter _writer;
+        private Symbols _symbols;
 
-        public Dumper(string filename)
+        public PopulateSymbolTablePass(Symbols symbols)
         {
-            _writer = System.IO.File.CreateText(filename);
+            _symbols = symbols;
         }
 
-        public void Close()
-        {
-            _writer.Close();
-            _writer = null;
-        }
-
-        public void Enter(Node that)
-        {
-            string above = (that.Above != null) ? that.Above.Id.ToString("D4") : "    ";
-            System.Console.Write("{0} {1}  ", above, that.Id.ToString("D4"));
-        }
-
-        public void Leave(Node that)
-        {
-            System.Console.WriteLine();
-            System.Console.WriteLine();
-        }
-
-        public void Print(string title, Node[] nodes)
-        {
-            System.Console.Write("{0} = [ ", title);
-            foreach (Node node in nodes)
-            {
-                System.Console.Write(node.Id);
-                if (node != nodes[nodes.Length - 1])
-                    System.Console.Write(", ");
-            }
-            System.Console.Write(']');
-        }
-
-        public void Sweep(Node[] nodes)
+        public void Visit(Node[] nodes)
         {
             foreach (Node node in nodes)
                 node.Visit(this);
@@ -74,323 +44,249 @@ namespace Bacchi.Writer
 
         public object Visit(Argument that)
         {
-            Enter(that);
-            System.Console.Write("Value = {0}", that.Value.Id);
-            Leave(that);
-
-            that.Value.Visit(this);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(ArrayExpression that)
         {
-            Enter(that);
-            System.Console.Write("Array = {0}, Index = {1}", that.Array.Id, that.Index.Id);
-            Leave(that);
-
-            that.Array.Visit(this);
-            that.Index.Visit(this);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(ArrayReference that)
         {
-            Enter(that);
-            System.Console.Write("Reference = {0}, Expression = {1}", that.Reference.Id, that.Expression.Id);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(ArrayType that)
         {
-            Enter(that);
-            System.Console.Write("Base = {0}, Name = {1}", that.Base.Id, that.Name);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(Assignment that)
         {
-            Enter(that);
-            System.Console.Write("Reference = {0}, Expression = {1}", that.Reference.Id, that.Expression.Id);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(BinaryExpression that)
         {
-            Enter(that);
-            System.Console.Write(
-                "Operator = {0}, First = {1}, Other = {2}",
-                that.Operator.ToString(),
-                that.First.Id,
-                that.Other.Id
-            );
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(Block that)
         {
-            Enter(that);
-            Print("Definitions", that.Definitions);
-            System.Console.Write(" ");
-            Print("Statements", that.Statements);
-            Leave(that);
-
-            Sweep(that.Definitions);
-            Sweep(that.Statements);
+            foreach (Definition definition in that.Definitions)
+                definition.Visit(this);
+            /** \note Don't visit the statements as they cannot create new symbols. */
 
             return null;
         }
 
         public object Visit(BooleanDefinition that)
         {
+            _symbols.Insert(that.Name, that);
             return null;
         }
 
         public object Visit(BooleanLiteral that)
         {
-            Enter(that);
-            System.Console.Write("Value = {0}", that.Value ? "true" : "false");
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(BooleanType that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(CallStatement that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(ConstantDefinition that)
         {
-            Enter(that);
-            Leave(that);
-
+            _symbols.Insert(that.Name, that);
             return null;
         }
 
         public object Visit(File that)
         {
-            Enter(that);
-            Leave(that);
-
+            Visit(that.Modules);
             return null;
         }
 
         public object Visit(ForallStatement that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(Guard that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(IdentifierExpression that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(IdentifierReference that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(IdentifierType that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(IntegerDefinition that)
         {
+            _symbols.Insert(that.Name, that);
             return null;
         }
 
         public object Visit(IntegerExpression that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(IntegerLiteral that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(IntegerType that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(MemberExpression that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(Module that)
         {
-            Enter(that);
-            Leave(that);
+            _symbols.Insert(that.Name, that);
 
+            Visit(that.Definitions);
+            if (that.Block != null)
+                that.Block.Visit(this);
             return null;
         }
 
         public object Visit(Parameter that)
         {
-            Enter(that);
-            Leave(that);
-
+            _symbols.Insert(that.Name, that);
             return null;
         }
 
         public object Visit(ParenthesisExpression that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(ProcedureCompletion that)
         {
+            /** \todo Look up procedure in symbol table and complete its definition entry. */
             return null;
         }
 
         public object Visit(ProcedureDeclaration that)
         {
+            /** Create a procedure definition entry for the specified procedure, with its block part set to \c null. */
             return null;
         }
 
         public object Visit(ProcedureDefinition that)
         {
+            _symbols.Insert(that.Name, that);
             return null;
         }
 
         public object Visit(Program that)
         {
-            Enter(that);
-            Leave(that);
-
             foreach (File file in that.Files)
                 file.Visit(this);
-
             return null;
         }
 
         public object Visit(RangeType that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(Statement that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(StringLiteral that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(TupleDefinition that)
         {
+            _symbols.Insert(that.Name, that);
             return null;
         }
 
         public object Visit(TupleExpression that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(TupleIndexExpression that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(TupleType that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(TypeDefinition that)
         {
+            _symbols.Insert(that.Name, that);
             return null;
         }
 
         public object Visit(UnaryExpression that)
         {
-            Enter(that);
-            Leave(that);
-
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
         public object Visit(VariableDefinition that)
         {
+            _symbols.Insert(that.Name, that);
             return null;
         }
     }

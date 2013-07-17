@@ -20,6 +20,8 @@
 
 /** \file
  *  Defines the \c Parameter class, which represents a single procedure parameter.
+ *
+ *  \note The \c Parameter class is not an explicit definition but rather an implicit definition created by a \c proc def.
  */
 
 using System.Collections.Generic;       // List<T>
@@ -28,18 +30,12 @@ using Bacchi.Kernel;                    // Error, Position
 
 namespace Bacchi.Syntax
 {
-    public class Parameter: Node
+    public class Parameter: Definition
     {
         private ModeKind _mode;
         public ModeKind Mode
         {
             get { return _mode; }
-        }
-
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
         }
 
         private Type _type;
@@ -49,15 +45,15 @@ namespace Bacchi.Syntax
         }
 
         public Parameter(Position position, ModeKind mode, string name, Type type):
-            base(NodeKind.Parameter, position)
+            base(NodeKind.Parameter, position, name)
         {
             _mode = mode;
-            _name = name;
+
             _type = type;
             _type.Above = this;
         }
 
-        public static Parameter Parse(Tokens tokens)
+        public static new Parameter Parse(Tokens tokens)
         {
             Token start = tokens.Peek;
 

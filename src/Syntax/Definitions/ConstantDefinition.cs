@@ -76,6 +76,12 @@ namespace Bacchi.Syntax
 
             return new ConstantDefinition(start.Position, name, literal);
         }
+
+        /** Implements the \c Visitor pattern. */
+        public override object Visit(Visitor that)
+        {
+            return that.Visit(this);
+        }
     }
 }
 

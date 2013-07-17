@@ -19,62 +19,29 @@
 #endregion
 
 /** \file
- *  The main driver program for the Bacchi compiler.
+ *  The symbol table passed from pass to pass, gradually being populated and attributed.
  */
 
 using System.Collections.Generic;       // Dictionary<T1, T2>
 
-using Bacchi.Kernel;                    // Error
-using Bacchi.Syntax;                    // Program
-using Bacchi.Passes;                    // XxxPass
-
-namespace Bacchi.Driver
+namespace Bacchi.Syntax
 {
-    public static class Application
+    public class Symbols
     {
-        public static int Main(string[] arguments)
+        private class NameToDefinitionMap: Dictionary<string, Definition>
         {
-            int result;
-            try
-            {
-                // Parse the input files into a single, coherent Abstract Syntax Tree (AST).
-                Program program = Program.Parse(arguments);
+        }
 
-                // Fill out the inherited and synthetic attributes in the AST.
-                Symbols symbols = new Symbols();
-                Visitor[] passes = new Visitor[]
-                {
-                    new PopulateSymbolTablePass(symbols)
-                };
+        private Stack<NameToDefinitionMap> _stack = new Stack<NameToDefinitionMap>();
 
-                var writer = new Bacchi.Writer.C("program.c");
-                try
-                {
-                    writer.Visit(program);
-                }
-                finally
-                {
-                    writer.Close();
-                }
+        public void Insert(string name, Definition definition)
+        {
 
-                result = 0;
-            }
-            catch (Error that)
-            {
-                System.Console.WriteLine(that.Position.ToString() + " Error: " + that.Message);
-                result = 1;
-#if TEST
-                throw;
-#endif
-            }
-            catch (System.Exception that)
-            {
-                System.Console.WriteLine("Error: " + that.Message);
-                result = 1;
-            }
+        }
 
-            return result;
+        public Definition Lookup(string name)
+        {
+            return null;
         }
     }
 }
-

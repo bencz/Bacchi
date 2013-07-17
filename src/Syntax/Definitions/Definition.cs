@@ -97,10 +97,5 @@ namespace Bacchi.Syntax
 
             return definitions.ToArray();
         }
-
-        public override object Visit(Visitor that)
-        {
-            return that.Visit(this);
-        }
     }
 }
