@@ -28,19 +28,30 @@ namespace Bacchi.Syntax
 {
     public abstract class Node
     {
+        private static int _count = 0;
+        private int _id = ++_count;
+        /** Returns the unique node ID. */
+        public int Id
+        {
+            get { return _id; }
+        }
+
         private NodeKind _kind;
+        /** Returns the node kind value. */
         public NodeKind Kind
         {
             get { return _kind; }
         }
 
         private Position _position;
+        /** Returns the starting position of the construct that caused this node to be created. */
         public Position Position
         {
             get { return _position; }
         }
 
         private Node _above;
+        /** Returns the parent node. \note This field is always \c null for the topmost \c Program node. */
         public Node Above
         {
             get { return _above; }
