@@ -1,3 +1,4 @@
 obj/
-Builder.exe
+src/program.c
+src/Builder.exe
 

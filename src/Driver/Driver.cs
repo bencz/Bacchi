@@ -29,7 +29,7 @@ using Bacchi.Syntax;                    // Program
 
 namespace Bacchi.Driver
 {
-    public static class Bacchi
+    public static class Entry
     {
         public static int Main(string[] arguments)
         {
@@ -38,6 +38,16 @@ namespace Bacchi.Driver
             {
                 // Parse the input files into a single, coherent Abstract Syntax Tree.
                 Program program = Program.Parse(arguments);
+
+                var writer = new Bacchi.Writer.C("program.c");
+                try
+                {
+                    writer.Visit(program);
+                }
+                finally
+                {
+                    writer.Close();
+                }
 
                 result = 0;
             }

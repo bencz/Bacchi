@@ -30,6 +30,12 @@ namespace Bacchi.Syntax
 {
     public class Module: Node
     {
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+        }
+
         private Definition[] _definitions;
         public Definition[] Definitions
         {
@@ -46,9 +52,11 @@ namespace Bacchi.Syntax
          *
          *  \note \c block may be null, if there's no private part (the module contains only public definitions).
          */
-        public Module(Position position, Definition[] definitions, Block block):
+        public Module(Position position, string name, Definition[] definitions, Block block):
             base(NodeKind.Module, position)
         {
+            _name = name;
+
             _definitions = definitions;
             foreach (Definition definition in _definitions)
                 definition.Above = this;
@@ -61,7 +69,7 @@ namespace Bacchi.Syntax
         public static Module Parse(Tokens tokens)
         {
             Token start = tokens.Match(TokenKind.Keyword_Module);
-            Token name  = tokens.Match(TokenKind.Identifier);
+            string name = tokens.Match(TokenKind.Identifier).Text;
 
             // Parse module interface.
             var definitions = Definition.ParseList(tokens, TokenKind.Keyword_Private, TokenKind.Keyword_Begin);
@@ -75,7 +83,7 @@ namespace Bacchi.Syntax
             }
             tokens.Match(TokenKind.Symbol_Dot);
 
-            return new Module(start.Position, definitions, block);
+            return new Module(start.Position, name, definitions, block);
         }
 
         public static Module[] ParseList(Tokens tokens)

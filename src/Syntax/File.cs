@@ -30,10 +30,10 @@ namespace Bacchi.Syntax
 {
     public class File: Node
     {
-        private string _filename;
-        public string Filename
+        private string _name;
+        public string Name
         {
-            get { return _filename; }
+            get { return _name; }
         }
 
         private Module[] _modules;
@@ -42,10 +42,10 @@ namespace Bacchi.Syntax
             get { return _modules; }
         }
 
-        public File(Position position, string filename, Module[] modules):
+        public File(Position position, string name, Module[] modules):
             base(NodeKind.File, position)
         {
-            _filename = filename;
+            _name = name;
 
             _modules = modules;
             foreach (Module module in _modules)
@@ -85,5 +85,4 @@ namespace Bacchi.Syntax
         }
     }
 }
-
 
