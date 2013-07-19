@@ -22,7 +22,7 @@
  *  Defines the \c Module class, which represents a single module in a program.
  */
 
-using System.Collections.Generic;       // List<T>
+using System.Collections.Generic;       // Dictionary<T1, T2>, List<T>
 
 using Bacchi.Kernel;                    // Error, Position, Tokens
 

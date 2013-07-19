@@ -46,6 +46,14 @@ namespace Bacchi.Driver
                 {
                     new PopulateSymbolTablePass(symbols)
                 };
+                foreach (Visitor pass in passes)
+                    program = (Program) pass.Visit(program);
+#if TEST
+                var symbol_dumper = System.IO.File.CreateText("program.sym");
+                symbols.Dump(symbol_dumper);
+                symbol_dumper.Close();
+#endif
+
 
                 var writer = new Bacchi.Writer.C("program.c");
                 try

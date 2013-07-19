@@ -22,6 +22,7 @@
  *  Defines the \c PopulateSymbolTablePass class, which traverses the tree and builds the symbol table.
  */
 
+using Bacchi.Kernel;                    // Error
 using Bacchi.Syntax;
 
 namespace Bacchi.Passes
@@ -89,7 +90,8 @@ namespace Bacchi.Passes
 
         public object Visit(BooleanDefinition that)
         {
-            _symbols.Insert(that.Name, that);
+            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
+            _symbols.Insert(that, scope);
             return null;
         }
 
@@ -113,7 +115,8 @@ namespace Bacchi.Passes
 
         public object Visit(ConstantDefinition that)
         {
-            _symbols.Insert(that.Name, that);
+            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
+            _symbols.Insert(that, scope);
             return null;
         }
 
@@ -155,7 +158,8 @@ namespace Bacchi.Passes
 
         public object Visit(IntegerDefinition that)
         {
-            _symbols.Insert(that.Name, that);
+            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
+            _symbols.Insert(that, scope);
             return null;
         }
 
@@ -185,17 +189,19 @@ namespace Bacchi.Passes
 
         public object Visit(Module that)
         {
-            _symbols.Insert(that.Name, that);
+            _symbols.EnterModule(that);
 
             Visit(that.Definitions);
             if (that.Block != null)
                 that.Block.Visit(this);
+
+            _symbols.LeaveModule(that);
             return null;
         }
 
         public object Visit(Parameter that)
         {
-            _symbols.Insert(that.Name, that);
+            _symbols.Insert(that, ScopeKind.Local);
             return null;
         }
 
@@ -207,19 +213,29 @@ namespace Bacchi.Passes
 
         public object Visit(ProcedureCompletion that)
         {
-            /** \todo Look up procedure in symbol table and complete its definition entry. */
+            Node definition = _symbols.Lookup(that.Name);
+            if (definition == null)
+                throw new Error(that.Position, 0, "Cannot complete undeclared procedure '" + that.Name + "'");
             return null;
         }
 
         public object Visit(ProcedureDeclaration that)
         {
             /** Create a procedure definition entry for the specified procedure, with its block part set to \c null. */
+            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
+            _symbols.Insert(that, scope);
             return null;
         }
 
         public object Visit(ProcedureDefinition that)
         {
-            _symbols.Insert(that.Name, that);
+            Node definition = _symbols.Lookup(that.Name);
+            if (definition != null)
+                throw new Error(that.Position, 0, "Cannot redefine procedure");
+
+            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
+            _symbols.Insert(that, scope);
+
             return null;
         }
 
@@ -227,7 +243,7 @@ namespace Bacchi.Passes
         {
             foreach (File file in that.Files)
                 file.Visit(this);
-            return null;
+            return that;
         }
 
         public object Visit(RangeType that)
@@ -250,7 +266,9 @@ namespace Bacchi.Passes
 
         public object Visit(TupleDefinition that)
         {
-            _symbols.Insert(that.Name, that);
+            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
+            _symbols.Insert(that, scope);
+
             return null;
         }
 
@@ -274,7 +292,9 @@ namespace Bacchi.Passes
 
         public object Visit(TypeDefinition that)
         {
-            _symbols.Insert(that.Name, that);
+            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
+            _symbols.Insert(that, scope);
+
             return null;
         }
 
@@ -286,7 +306,9 @@ namespace Bacchi.Passes
 
         public object Visit(VariableDefinition that)
         {
-            _symbols.Insert(that.Name, that);
+            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
+            _symbols.Insert(that, scope);
+
             return null;
         }
     }

@@ -24,24 +24,99 @@
 
 using System.Collections.Generic;       // Dictionary<T1, T2>
 
+using Bacchi.Kernel;                    // Error
+
 namespace Bacchi.Syntax
 {
     public class Symbols
     {
-        private class NameToDefinitionMap: Dictionary<string, Definition>
+        private class NameToSymbolMap: Dictionary<string, Symbol>
         {
         }
 
-        private Stack<NameToDefinitionMap> _stack = new Stack<NameToDefinitionMap>();
+        private Dictionary<string, NameToSymbolMap> _modules = new Dictionary<string, NameToSymbolMap>();
+        private NameToSymbolMap                     _current;       // The current module.
 
-        public void Insert(string name, Definition definition)
+        public void Dump(System.IO.StreamWriter writer)
         {
+            writer.WriteLine("Symbol table dump:");
+            writer.WriteLine();
 
+            foreach (string module in _modules.Keys)
+            {
+                writer.WriteLine("Module {0}:", module);
+                foreach (string name in _modules[module].Keys)
+                {
+                    Symbol symbol = _modules[module][name];
+                    writer.WriteLine("    {0} = {1} {2}", name, symbol.Scope.ToString().ToLowerInvariant(), symbol.Definition.Id);
+                }
+                writer.WriteLine();
+            }
+        }
+
+        public void EnterModule(Module that)
+        {
+            if (_modules.ContainsKey(that.Name))
+                throw new Error(that.Position, 0, "Module '" + that.Name + "' already defined");
+
+            _current = new NameToSymbolMap();
+            _modules[that.Name] = _current;
+            _modules[that.Name][""] = new Symbol(that, ScopeKind.Global);
+        }
+
+        public void LeaveModule(Module that)
+        {
+            _current = null;
+        }
+
+        public void Insert(Definition definition, ScopeKind scope)
+        {
+            // Check that the symbol doesn't already exist in the current scope.
+            if (_current.ContainsKey(definition.Name))
+                throw new Error(definition.Position, 0, "Symbol '" + definition.Name + "' already defined");
+
+            // Insert the symbol into the current scope.
+            Symbol symbol = new Symbol(definition, scope);
+            _current[definition.Name] = symbol;
         }
 
         public Definition Lookup(string name)
         {
+            // Try looking up the symbol in the current module.
+            if (_current.ContainsKey(name))
+                return _current[name].Definition;
+
+            // Try looking up the symbol in the public section of previously defined modules.
+            foreach (string key in _modules.Keys)
+            {
+                // Abort the search when we hit the current module.
+                if (key == _current[""].Definition.Name)
+                    break;
+
+                // Continue looking if the module being examined does not define the symbol.
+                if (!_modules[key].ContainsKey(name))
+                    continue;
+
+                // Don't return local symbols; they are private to the module in question.
+                if (_modules[key][name].Scope == ScopeKind.Local)
+                    continue;
+
+                return _modules[key][name].Definition;
+            }
+
             return null;
+        }
+
+        public Definition Lookup(Position position, string module_name, string name)
+        {
+            if (!_modules.ContainsKey(module_name))
+                throw new Error(position, 0, "Module '" + module_name + "' unknown");
+
+            NameToSymbolMap map = _modules[module_name];
+            if (!map.ContainsKey(name) || map[name].Scope != ScopeKind.Global)
+                throw new Error(position, 0, "Module '" + module_name + "' does not define the public symbol '" + name + "'");
+
+            return map[name].Definition;
         }
     }
 }
