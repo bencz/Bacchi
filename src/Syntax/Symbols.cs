@@ -47,8 +47,12 @@ namespace Bacchi.Syntax
                 writer.WriteLine("Module {0}:", module);
                 foreach (string name in _modules[module].Keys)
                 {
+                    // Don't dump the internal-use-only module symbol.
+                    if (name.Length == 0)
+                        continue;
+
                     Symbol symbol = _modules[module][name];
-                    writer.WriteLine("    {0} = {1} {2}", name, symbol.Scope.ToString().ToLowerInvariant(), symbol.Definition.Id);
+                    writer.WriteLine("    {0} {1} @{2}", symbol.Scope.ToString().ToLowerInvariant(), name, symbol.Definition.Id);
                 }
                 writer.WriteLine();
             }
