@@ -238,6 +238,8 @@ namespace Bacchi.Syntax
             do
             {
                 var expression = Expression.Parse(tokens);
+                expressions.Add(expression);
+
                 if (tokens.Peek.Kind != TokenKind.Symbol_Comma)
                     break;
                 tokens.Match(TokenKind.Symbol_Comma);

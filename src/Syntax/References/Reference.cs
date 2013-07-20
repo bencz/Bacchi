@@ -55,16 +55,18 @@ namespace Bacchi.Syntax
 
         public static Reference[] ParseList(Tokens tokens, TokenKind terminator)
         {
-            var expressions = new List<Reference>();
+            var references = new List<Reference>();
             do
             {
-                var expression = Reference.Parse(tokens);
+                var reference = Reference.Parse(tokens);
+                references.Add(reference);
+
                 if (tokens.Peek.Kind != TokenKind.Symbol_Comma)
                     break;
                 tokens.Match(TokenKind.Symbol_Comma);
             } while (tokens.Peek.Kind != terminator);
 
-            return expressions.ToArray();
+            return references.ToArray();
         }
     }
 }
