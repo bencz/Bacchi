@@ -252,6 +252,17 @@ namespace Bacchi.Writer.Dumper
             return null;
         }
 
+        public object Visit(DoStatement that)
+        {
+            Enter(that);
+            Print("Guards", that.Guards);
+            Leave(that);
+
+            Visit(that.Guards);
+
+            return null;
+        }
+
         public object Visit(File that)
         {
             Enter(that);
@@ -316,6 +327,17 @@ namespace Bacchi.Writer.Dumper
             return null;
         }
 
+        public object Visit(IfStatement that)
+        {
+            Enter(that);
+            Print("Guards", that.Guards);
+            Leave(that);
+
+            Visit(that.Guards);
+
+            return null;
+        }
+
         public object Visit(IntegerDefinition that)
         {
             Enter(that);
@@ -347,6 +369,17 @@ namespace Bacchi.Writer.Dumper
         {
             Enter(that);
             Leave(that);
+
+            return null;
+        }
+
+        public object Visit(LetStatement that)
+        {
+            Enter(that);
+            Print("Assignments", that.Assignments);
+            Leave(that);
+
+            Visit(that.Assignments);
 
             return null;
         }
@@ -462,7 +495,26 @@ namespace Bacchi.Writer.Dumper
             return null;
         }
 
-        public object Visit(Statement that)
+        public object Visit(ReadStatement that)
+        {
+            Enter(that);
+            Print("References", that.References);
+            Leave(that);
+
+            Visit(that.References);
+
+            return null;
+        }
+
+        public object Visit(ReturnStatement that)
+        {
+            Enter(that);
+            Leave(that);
+
+            return null;
+        }
+
+        public object Visit(SkipStatement that)
         {
             Enter(that);
             Leave(that);
@@ -553,6 +605,17 @@ namespace Bacchi.Writer.Dumper
             Print("Name", that.Name);
             Print("Type", that.Type);
             Leave(that);
+
+            return null;
+        }
+
+        public object Visit(WriteStatement that)
+        {
+            Enter(that);
+            Print("Expressions", that.Expressions);
+            Leave(that);
+
+            Visit(that.Expressions);
 
             return null;
         }

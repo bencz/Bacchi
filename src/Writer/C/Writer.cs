@@ -116,8 +116,9 @@ namespace Bacchi.Writer.C
             return null;
         }
 
-        public object Visit(Definition that)
+        public object Visit(DoStatement that)
         {
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
 
@@ -154,6 +155,11 @@ namespace Bacchi.Writer.C
             return null;
         }
 
+        public object Visit(IfStatement that)
+        {
+            return null;
+        }
+
         public object Visit(IntegerDefinition that)
         {
             return null;
@@ -170,6 +176,11 @@ namespace Bacchi.Writer.C
         }
 
         public object Visit(IntegerType that)
+        {
+            return null;
+        }
+
+        public object Visit(LetStatement that)
         {
             return null;
         }
@@ -230,7 +241,17 @@ namespace Bacchi.Writer.C
             return null;
         }
 
-        public object Visit(Statement that)
+        public object Visit(ReadStatement that)
+        {
+            return null;
+        }
+
+        public object Visit(ReturnStatement that)
+        {
+            return null;
+        }
+
+        public object Visit(SkipStatement that)
         {
             return null;
         }
@@ -271,6 +292,11 @@ namespace Bacchi.Writer.C
         }
 
         public object Visit(VariableDefinition that)
+        {
+            return null;
+        }
+
+        public object Visit(WriteStatement that)
         {
             return null;
         }

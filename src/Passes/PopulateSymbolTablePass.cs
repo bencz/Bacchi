@@ -120,6 +120,12 @@ namespace Bacchi.Passes
             return null;
         }
 
+        public object Visit(DoStatement that)
+        {
+            /** \note There are no relavant nodes below this node. */
+            return null;
+        }
+
         public object Visit(File that)
         {
             Visit(that.Modules);
@@ -156,6 +162,12 @@ namespace Bacchi.Passes
             return null;
         }
 
+        public object Visit(IfStatement that)
+        {
+            /** \note There are no relavant nodes below this node. */
+            return null;
+        }
+
         public object Visit(IntegerDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
@@ -176,6 +188,12 @@ namespace Bacchi.Passes
         }
 
         public object Visit(IntegerType that)
+        {
+            /** \note There are no relavant nodes below this node. */
+            return null;
+        }
+
+        public object Visit(LetStatement that)
         {
             /** \note There are no relavant nodes below this node. */
             return null;
@@ -252,7 +270,19 @@ namespace Bacchi.Passes
             return null;
         }
 
-        public object Visit(Statement that)
+        public object Visit(ReadStatement that)
+        {
+            /** \note There are no relavant nodes below this node. */
+            return null;
+        }
+
+        public object Visit(ReturnStatement that)
+        {
+            /** \note There are no relavant nodes below this node. */
+            return null;
+        }
+
+        public object Visit(SkipStatement that)
         {
             /** \note There are no relavant nodes below this node. */
             return null;
@@ -309,6 +339,12 @@ namespace Bacchi.Passes
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
 
+            return null;
+        }
+
+        public object Visit(WriteStatement that)
+        {
+            /** \note There are no relavant nodes below this node. */
             return null;
         }
     }
