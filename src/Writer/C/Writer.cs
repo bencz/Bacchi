@@ -24,14 +24,14 @@
 
 using Bacchi.Syntax;
 
-namespace Bacchi.Writer
+namespace Bacchi.Writer.C
 {
     /** Writer used to write C source code to a file. */
-    public class C: Visitor
+    public class Writer: Visitor
     {
         private System.IO.StreamWriter _writer;
 
-        public C(string filename)
+        public Writer(string filename)
         {
             _writer = System.IO.File.CreateText(filename);
         }

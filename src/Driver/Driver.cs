@@ -25,8 +25,8 @@
 using System.Collections.Generic;       // Dictionary<T1, T2>
 
 using Bacchi.Kernel;                    // Error
-using Bacchi.Syntax;                    // Program
 using Bacchi.Passes;                    // XxxPass
+using Bacchi.Syntax;                    // Program
 
 namespace Bacchi.Driver
 {
@@ -40,6 +40,19 @@ namespace Bacchi.Driver
                 // Parse the input files into a single, coherent Abstract Syntax Tree (AST).
                 Program program = Program.Parse(arguments);
 
+#if TEST
+                // Dump AST to 'program.ast' file.
+                var dumper = new Bacchi.Writer.Dumper.Writer("program.ast");
+                try
+                {
+                    dumper.Visit(program);
+                }
+                finally
+                {
+                    dumper.Close();
+                }
+#endif
+
                 // Fill out the inherited and synthetic attributes in the AST.
                 Symbols symbols = new Symbols();
                 Visitor[] passes = new Visitor[]
@@ -48,14 +61,16 @@ namespace Bacchi.Driver
                 };
                 foreach (Visitor pass in passes)
                     program = (Program) pass.Visit(program);
+
 #if TEST
+                // Dump symbol table to 'program.sym' file.
                 var symbol_dumper = System.IO.File.CreateText("program.sym");
                 symbols.Dump(symbol_dumper);
                 symbol_dumper.Close();
 #endif
 
 
-                var writer = new Bacchi.Writer.C("program.c");
+                var writer = new Bacchi.Writer.C.Writer("program.c");
                 try
                 {
                     writer.Visit(program);

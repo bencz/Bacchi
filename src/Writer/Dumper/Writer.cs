@@ -22,18 +22,23 @@
  *  Defines the \c Visitor interface, which is used to traverse the Abstract Syntax Tree (AST).
  */
 
+using System.Collections.Generic;       // Stack<T>
+
 using Bacchi.Syntax;
 
-namespace Bacchi.Writer
+namespace Bacchi.Writer.Dumper
 {
     /** Dumper used to dump the Abstract Syntax Tree (AST) to a file. */
-    public class Dumper: Visitor
+    public class Writer: Visitor
     {
         private System.IO.StreamWriter _writer;
+        private Stack<bool> _commas = new Stack<bool>();
+        private bool        _comma = false;
 
-        public Dumper(string filename)
+        public Writer(string filename)
         {
             _writer = System.IO.File.CreateText(filename);
+            _writer.WriteLine("THIS (OVER) FIELDS");
         }
 
         public void Close()
@@ -42,43 +47,79 @@ namespace Bacchi.Writer
             _writer = null;
         }
 
-        public void Enter(Node that)
+        private void Enter(Node that)
         {
-            string above = (that.Above != null) ? that.Above.Id.ToString("D4") : "    ";
-            System.Console.Write("{0} {1}  ", above, that.Id.ToString("D4"));
+            _commas.Push(_comma);
+            _comma = false;
+
+            string above = (that.Above != null) ? that.Above.Id.ToString("D4") : "none";
+            _writer.Write("{1} ({0}) {2}: ", above, that.Id.ToString("D4"), that.Kind.ToString());
         }
 
-        public void Leave(Node that)
+        private void Leave(Node that)
         {
-            System.Console.WriteLine();
-            System.Console.WriteLine();
+            _writer.WriteLine();
+            _comma = _commas.Pop();
         }
 
-        public void Print(string title, Node[] nodes)
+        private void Print(string title, Node node)
         {
-            System.Console.Write("{0} = [ ", title);
+            if (_comma)
+                _writer.Write(", ");
+            _comma = true;
+            _writer.Write("{0} = {1}", title, node.Id);
+        }
+
+        private void Print(string title, Node[] nodes)
+        {
+            if (_comma)
+                _writer.Write(", ");
+            _comma = true;
+            _writer.Write("{0} = [ ", title);
             foreach (Node node in nodes)
             {
-                System.Console.Write(node.Id);
+                _writer.Write(node.Id);
                 if (node != nodes[nodes.Length - 1])
-                    System.Console.Write(", ");
+                    _writer.Write(", ");
             }
-            System.Console.Write(']');
+            if (nodes.Length > 0)
+                _writer.Write(' ');
+            _writer.Write(']');
         }
 
-        public void Sweep(Node[] nodes)
+        private void Print(string title, string value, bool quote = false)
+        {
+            if (_comma)
+                _writer.Write(", ");
+            _comma = true;
+            _writer.Write("{0} = ", title);
+            if (quote)
+                _writer.Write('\'');
+            _writer.Write(value);
+            if (quote)
+                _writer.Write('\'');
+        }
+
+        private void Visit(Node node)
+        {
+            node.Visit(this);
+        }
+
+        private void Visit(Node[] nodes)
         {
             foreach (Node node in nodes)
                 node.Visit(this);
         }
 
+        /** Visitor methods defines in the \c Visitor interface. *****************************************************************/
+
         public object Visit(Argument that)
         {
             Enter(that);
-            System.Console.Write("Value = {0}", that.Value.Id);
+            Print("Value", that.Value);
             Leave(that);
 
-            that.Value.Visit(this);
+            Visit(that.Value);
 
             return null;
         }
@@ -86,11 +127,12 @@ namespace Bacchi.Writer
         public object Visit(ArrayExpression that)
         {
             Enter(that);
-            System.Console.Write("Array = {0}, Index = {1}", that.Array.Id, that.Index.Id);
+            Print("Array", that.Array);
+            Print("Index", that.Index);
             Leave(that);
 
-            that.Array.Visit(this);
-            that.Index.Visit(this);
+            Visit(that.Array);
+            Visit(that.Index);
 
             return null;
         }
@@ -98,8 +140,12 @@ namespace Bacchi.Writer
         public object Visit(ArrayReference that)
         {
             Enter(that);
-            System.Console.Write("Reference = {0}, Expression = {1}", that.Reference.Id, that.Expression.Id);
+            Print("Reference", that.Reference);
+            Print("Expression", that.Expression);
             Leave(that);
+
+            Visit(that.Reference);
+            Visit(that.Expression);
 
             return null;
         }
@@ -107,8 +153,11 @@ namespace Bacchi.Writer
         public object Visit(ArrayType that)
         {
             Enter(that);
-            System.Console.Write("Base = {0}, Name = {1}", that.Base.Id, that.Name);
+            Print("Base", that.Base);
+            Print("Name", that.Name);
             Leave(that);
+
+            Visit(that.Base);
 
             return null;
         }
@@ -116,8 +165,12 @@ namespace Bacchi.Writer
         public object Visit(Assignment that)
         {
             Enter(that);
-            System.Console.Write("Reference = {0}, Expression = {1}", that.Reference.Id, that.Expression.Id);
+            Print("Reference", that.Reference);
+            Print("Expression", that.Expression);
             Leave(that);
+
+            Visit(that.Reference);
+            Visit(that.Expression);
 
             return null;
         }
@@ -125,13 +178,13 @@ namespace Bacchi.Writer
         public object Visit(BinaryExpression that)
         {
             Enter(that);
-            System.Console.Write(
-                "Operator = {0}, First = {1}, Other = {2}",
-                that.Operator.ToString(),
-                that.First.Id,
-                that.Other.Id
-            );
+            Print("Operator", that.Operator.ToString());
+            Print("First", that.First);
+            Print("Other", that.Other);
             Leave(that);
+
+            Visit(that.First);
+            Visit(that.Other);
 
             return null;
         }
@@ -140,25 +193,28 @@ namespace Bacchi.Writer
         {
             Enter(that);
             Print("Definitions", that.Definitions);
-            System.Console.Write(" ");
             Print("Statements", that.Statements);
             Leave(that);
 
-            Sweep(that.Definitions);
-            Sweep(that.Statements);
+            Visit(that.Definitions);
+            Visit(that.Statements);
 
             return null;
         }
 
         public object Visit(BooleanDefinition that)
         {
+            Enter(that);
+            Print("Name", that.Name);
+            Leave(that);
+
             return null;
         }
 
         public object Visit(BooleanLiteral that)
         {
             Enter(that);
-            System.Console.Write("Value = {0}", that.Value ? "true" : "false");
+            Print("Value", that.Value ? "true" : "false");
             Leave(that);
 
             return null;
@@ -175,7 +231,11 @@ namespace Bacchi.Writer
         public object Visit(CallStatement that)
         {
             Enter(that);
+            Print("Name", that.Name);
+            Print("Arguments", that.Arguments);
             Leave(that);
+
+            Visit(that.Arguments);
 
             return null;
         }
@@ -183,7 +243,11 @@ namespace Bacchi.Writer
         public object Visit(ConstantDefinition that)
         {
             Enter(that);
+            Print("Name", that.Name);
+            Print("Literal", that.Literal);
             Leave(that);
+
+            Visit(that.Literal);
 
             return null;
         }
@@ -191,7 +255,11 @@ namespace Bacchi.Writer
         public object Visit(File that)
         {
             Enter(that);
+            Print("Name", that.Name, true);
+            Print("Modules", that.Modules);
             Leave(that);
+
+            Visit(that.Modules);
 
             return null;
         }
@@ -199,7 +267,11 @@ namespace Bacchi.Writer
         public object Visit(ForallStatement that)
         {
             Enter(that);
+            Print("Variable", that.Variable);
+            Print("Statements", that.Statements);
             Leave(that);
+
+            Visit(that.Statements);
 
             return null;
         }
@@ -207,7 +279,12 @@ namespace Bacchi.Writer
         public object Visit(Guard that)
         {
             Enter(that);
+            Print("Expression", that.Expression);
+            Print("Statements", that.Statements);
             Leave(that);
+
+            Visit(that.Expression);
+            Visit(that.Statements);
 
             return null;
         }
@@ -215,6 +292,7 @@ namespace Bacchi.Writer
         public object Visit(IdentifierExpression that)
         {
             Enter(that);
+            Print("Name", that.Name);
             Leave(that);
 
             return null;
@@ -223,6 +301,7 @@ namespace Bacchi.Writer
         public object Visit(IdentifierReference that)
         {
             Enter(that);
+            Print("Name", that.Name);
             Leave(that);
 
             return null;
@@ -231,6 +310,7 @@ namespace Bacchi.Writer
         public object Visit(IdentifierType that)
         {
             Enter(that);
+            Print("Name", that.Name);
             Leave(that);
 
             return null;
@@ -238,12 +318,17 @@ namespace Bacchi.Writer
 
         public object Visit(IntegerDefinition that)
         {
+            Enter(that);
+            Print("Name", that.Name);
+            Leave(that);
+
             return null;
         }
 
         public object Visit(IntegerExpression that)
         {
             Enter(that);
+            Print("Value", that.Value.ToString());
             Leave(that);
 
             return null;
@@ -252,6 +337,7 @@ namespace Bacchi.Writer
         public object Visit(IntegerLiteral that)
         {
             Enter(that);
+            Print("Value", that.Value.ToString());
             Leave(that);
 
             return null;
@@ -268,7 +354,11 @@ namespace Bacchi.Writer
         public object Visit(MemberExpression that)
         {
             Enter(that);
+            Print("Prefix", that.Prefix);
+            Print("Field", that.Field);
             Leave(that);
+
+            Visit(that.Prefix);
 
             return null;
         }
@@ -276,7 +366,12 @@ namespace Bacchi.Writer
         public object Visit(Module that)
         {
             Enter(that);
+            Print("Definitions", that.Definitions);
+            Print("Block", that.Block);
             Leave(that);
+
+            Visit(that.Definitions);
+            Visit(that.Block);
 
             return null;
         }
@@ -284,7 +379,12 @@ namespace Bacchi.Writer
         public object Visit(Parameter that)
         {
             Enter(that);
+            Print("Name", that.Name);
+            Print("Mode", that.Mode.ToString());
+            Print("Type", that.Type);
             Leave(that);
+
+            Visit(that.Type);
 
             return null;
         }
@@ -292,33 +392,57 @@ namespace Bacchi.Writer
         public object Visit(ParenthesisExpression that)
         {
             Enter(that);
+            Print("Expression", that.Expression);
             Leave(that);
+
+            Visit(that.Expression);
 
             return null;
         }
 
         public object Visit(ProcedureCompletion that)
         {
+            Enter(that);
+            Print("Name", that.Name);
+            Print("Block", that.Block);
+            Leave(that);
+
             return null;
         }
 
         public object Visit(ProcedureDeclaration that)
         {
+            Enter(that);
+            Print("Name", that.Name);
+            Print("Parameters", that.Parameters);
+            Leave(that);
+
+            Visit(that.Parameters);
+
             return null;
         }
 
         public object Visit(ProcedureDefinition that)
         {
+            Enter(that);
+            Print("Name", that.Name);
+            Print("Parameters", that.Parameters);
+            Print("Block", that.Block);
+            Leave(that);
+
+            Visit(that.Parameters);
+            Visit(that.Block);
+
             return null;
         }
 
         public object Visit(Program that)
         {
             Enter(that);
+            Print("Files", that.Files);
             Leave(that);
 
-            foreach (File file in that.Files)
-                file.Visit(this);
+            Visit(that.Files);
 
             return null;
         }
@@ -326,7 +450,14 @@ namespace Bacchi.Writer
         public object Visit(RangeType that)
         {
             Enter(that);
+            Print("Type", that.Type);
+            Print("Lower", that.Lower);
+            Print("Upper", that.Upper);
             Leave(that);
+
+            Visit(that.Type);
+            Visit(that.Lower);
+            Visit(that.Upper);
 
             return null;
         }
@@ -342,6 +473,7 @@ namespace Bacchi.Writer
         public object Visit(StringLiteral that)
         {
             Enter(that);
+            Print("Value", that.Value, true);
             Leave(that);
 
             return null;
@@ -349,13 +481,22 @@ namespace Bacchi.Writer
 
         public object Visit(TupleDefinition that)
         {
+            Enter(that);
+            Print("Types", that.Types);
+            Leave(that);
+
+            Visit(that.Types);
+
             return null;
         }
 
         public object Visit(TupleExpression that)
         {
             Enter(that);
+            Print("Expressions", that.Expressions);
             Leave(that);
+
+            Visit(that.Expressions);
 
             return null;
         }
@@ -363,7 +504,11 @@ namespace Bacchi.Writer
         public object Visit(TupleIndexExpression that)
         {
             Enter(that);
+            Print("Prefix", that.Prefix);
+            Print("Index", that.Index.ToString());
             Leave(that);
+
+            Visit(that.Prefix);
 
             return null;
         }
@@ -371,26 +516,44 @@ namespace Bacchi.Writer
         public object Visit(TupleType that)
         {
             Enter(that);
+            Print("Types", that.Types);
             Leave(that);
+
+            Visit(that.Types);
 
             return null;
         }
 
         public object Visit(TypeDefinition that)
         {
+            Enter(that);
+            Print("Type", that.Type);
+            Leave(that);
+
+            Visit(that.Type);
+
             return null;
         }
 
         public object Visit(UnaryExpression that)
         {
             Enter(that);
+            Print("Operator", that.Operator.ToString());
+            Print("Expression", that.Expression);
             Leave(that);
+
+            Visit(that.Expression);
 
             return null;
         }
 
         public object Visit(VariableDefinition that)
         {
+            Enter(that);
+            Print("Name", that.Name);
+            Print("Type", that.Type);
+            Leave(that);
+
             return null;
         }
     }
