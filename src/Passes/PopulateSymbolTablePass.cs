@@ -27,7 +27,7 @@ using Bacchi.Syntax;
 
 namespace Bacchi.Passes
 {
-    /** Dumper used to dump the Abstract Syntax Tree (AST) to a file. */
+    /** Populates the global symbol table with symbols from the AST. */
     public class PopulateSymbolTablePass: Visitor
     {
         private Symbols _symbols;

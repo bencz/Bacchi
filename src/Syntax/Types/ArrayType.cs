@@ -44,6 +44,8 @@ namespace Bacchi.Syntax
             base(NodeKind.ArrayType, position)
         {
             _base = @base;
+            _base.Above = this;
+
             _name = name;
         }
 

@@ -579,6 +579,7 @@ namespace Bacchi.Writer.Dumper
         public object Visit(TypeDefinition that)
         {
             Enter(that);
+            Print("Name", that.Name);
             Print("Type", that.Type);
             Leave(that);
 
