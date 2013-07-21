@@ -33,6 +33,22 @@ namespace Bacchi.Syntax
         {
         }
 
+        public override bool Equal(Symbols symbols, Type other)
+        {
+            switch (other.Kind)
+            {
+                case NodeKind.BooleanType:
+                    return true;
+
+                case NodeKind.RangeType:
+                    /** \note The compatibility of range types depends upon the base type of the range type. */
+                    return ((RangeType) other).Type.Kind == NodeKind.BooleanType;
+
+                default:
+                    return false;
+            }
+        }
+
         public static new Type Parse(Tokens tokens)
         {
             Token start = tokens.Match(TokenKind.Keyword_Boolean);

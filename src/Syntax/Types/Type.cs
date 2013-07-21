@@ -33,6 +33,8 @@ namespace Bacchi.Syntax
         {
         }
 
+        public abstract bool Equal(Symbols symbols, Type other);
+
         public static Type Parse(Tokens tokens)
         {
             Token start = tokens.Peek;

@@ -42,6 +42,16 @@ namespace Bacchi.Syntax
             _name = name;
         }
 
+        public override bool Equal(Symbols symbols, Type other)
+        {
+            Definition definition = symbols.Lookup(_name);
+            if (definition.Kind != NodeKind.TypeDefinition)
+                return false;
+
+            Type first = ((TypeDefinition) definition).Type;
+            return first.Equal(symbols, other);
+        }
+
         public static new IdentifierType Parse(Tokens tokens)
         {
             Token start = tokens.Match(TokenKind.Identifier);

@@ -46,6 +46,24 @@ namespace Bacchi.Syntax
             get { return _upper; }
         }
 
+        public override bool Equal(Symbols symbols, Type other)
+        {
+            switch (other.Kind)
+            {
+                case NodeKind.BooleanType:
+                    return (_type.Kind == NodeKind.BooleanType);
+
+                case NodeKind.IntegerType:
+                    return (_type.Kind == NodeKind.IntegerType);
+
+                case NodeKind.RangeType:
+                    return (_type.Kind == NodeKind.RangeType && _type.Equal(symbols, ((RangeType) _type).Type));
+
+                default:
+                    return false;
+            }
+        }
+
         public RangeType(Position position, Type type, Expression lower, Expression upper):
             base(NodeKind.RangeType, position)
         {

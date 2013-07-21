@@ -35,6 +35,22 @@ namespace Bacchi.Syntax
         {
         }
 
+        public override bool Equal(Symbols symbols, Type other)
+        {
+            switch (other.Kind)
+            {
+                case NodeKind.IntegerType:
+                    return true;
+
+                case NodeKind.RangeType:
+                    /** \note The compatibility of range types depends upon the base type of the range type. */
+                    return ((RangeType) other).Type.Kind == NodeKind.IntegerType;
+
+                default:
+                    return false;
+            }
+        }
+
         /** Parses a sequence of tokens matching an \c integer type and returns a new \c IntegerType instance. */
         public static new IntegerType Parse(Tokens tokens)
         {

@@ -46,6 +46,24 @@ namespace Bacchi.Syntax
                 type.Above = this;
         }
 
+        public override bool Equal(Symbols symbols, Type other)
+        {
+            if (other.Kind != NodeKind.TupleType)
+                return false;
+
+            TupleType other_tuple = (TupleType) other;
+            if (_types.Length != other_tuple.Types.Length)
+                return false;
+
+            for (int i = 0; i < _types.Length; i++)
+            {
+                if (!_types[i].Equal(symbols, other_tuple.Types[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
         /** Parses a sequence of tokens and returns a new \c TupleType instance representing the parsed tokens. */
         public static new TupleType Parse(Tokens tokens)
         {
