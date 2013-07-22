@@ -41,10 +41,7 @@ namespace Bacchi.Syntax
         {
             get
             {
-                Definition definition = this.World.Symbols.Lookup(_name);
-                if (definition == null)
-                    throw new Error(this.Position, 0, "Unknown symbol: " + _name);
-
+                Definition definition = this.World.Symbols.Lookup(this.Position, _name);
                 return definition.BaseType;
             }
         }
@@ -53,10 +50,7 @@ namespace Bacchi.Syntax
         {
             get
             {
-                Definition definition = this.World.Symbols.Lookup(_name);
-                if (definition == null)
-                    throw new Error(this.Position, 0, "Unknown symbol: " + _name);
-
+                Definition definition = this.World.Symbols.Lookup(this.Position, _name);
                 return (definition.Kind == NodeKind.ConstantDefinition);
             }
         }
@@ -65,9 +59,7 @@ namespace Bacchi.Syntax
         {
             get
             {
-                Definition definition = this.World.Symbols.Lookup(_name);
-                if (definition == null)
-                    throw new Error(this.Position, 0, "Unknown symbol: " + _name);
+                Definition definition = this.World.Symbols.Lookup(this.Position, _name);
 
                 if (definition.Kind != NodeKind.ConstantDefinition)
                     throw new InternalError("Attempt of computing value of non-constant expression");
