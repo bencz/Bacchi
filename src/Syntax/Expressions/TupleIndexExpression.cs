@@ -52,9 +52,7 @@ namespace Bacchi.Syntax
                     throw new InternalError("Expected identifier but found: " + _prefix.Kind.ToString());
 
                 string name = ((IdentifierExpression) _prefix).Name;
-                Definition definition = this.World.Symbols.Lookup(name);
-                if (definition == null)
-                    throw new Error(_prefix.Position, 0, "Symbol not found: " + name);
+                Definition definition = this.World.Symbols.Lookup(_prefix.Position, name);
 
                 if (definition.Kind != NodeKind.TupleDefinition)
                     throw new Error(_prefix.Position, 0, "Expected tuple definition");
