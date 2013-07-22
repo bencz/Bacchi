@@ -51,7 +51,7 @@ namespace Bacchi.Syntax
             get
             {
                 string name = ((IdentifierExpression) _prefix).Name;
-                Definition definition = this.World.Symbols.Lookup(name);
+                Definition definition = this.World.Symbols.Lookup(_prefix.Position, name);
                 return definition.BaseType;
             }
         }
@@ -61,7 +61,7 @@ namespace Bacchi.Syntax
             get
             {
                 string name = ((IdentifierExpression) _prefix).Name;
-                Definition definition = this.World.Symbols.Lookup(name);
+                Definition definition = this.World.Symbols.Lookup(_prefix.Position, name);
                 return (definition.Kind == NodeKind.ConstantDefinition);
             }
         }
@@ -71,7 +71,7 @@ namespace Bacchi.Syntax
             get
             {
                 string name = ((IdentifierExpression) _prefix).Name;
-                ConstantDefinition definition = (ConstantDefinition) this.World.Symbols.Lookup(name);
+                ConstantDefinition definition = (ConstantDefinition) this.World.Symbols.Lookup(_prefix.Position, name);
                 if (definition.Literal.Kind == NodeKind.IntegerLiteral)
                     return ((IntegerLiteral) definition.Literal).Value;
                 else if (definition.Literal.Kind == NodeKind.BooleanLiteral)
