@@ -169,11 +169,6 @@ namespace Bacchi.Writer.C
             return null;
         }
 
-        public object Visit(IntegerExpression that)
-        {
-            return null;
-        }
-
         public object Visit(IntegerLiteral that)
         {
             return null;

@@ -347,15 +347,6 @@ namespace Bacchi.Writer.Dumper
             return null;
         }
 
-        public object Visit(IntegerExpression that)
-        {
-            Enter(that);
-            Print("Value", that.Value.ToString());
-            Leave(that);
-
-            return null;
-        }
-
         public object Visit(IntegerLiteral that)
         {
             Enter(that);

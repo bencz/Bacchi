@@ -19,7 +19,7 @@
 #endregion
 
 /** \file
- *  Defines the class \c IntegerLiteral, which represents a single integer literal.
+ *  Defines the \c IntegerLiteral class, which represents a single integer literal.
  */
 
 using Bacchi.Kernel;                    // Error, Position, Tokens
@@ -30,7 +30,7 @@ namespace Bacchi.Syntax
     public class IntegerLiteral: Literal
     {
         /** Literal attributes. */
-        protected int _value;
+        private int _value;
         public int Value
         {
             get { return _value; }

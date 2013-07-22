@@ -175,12 +175,6 @@ namespace Bacchi.Passes
             return null;
         }
 
-        public object Visit(IntegerExpression that)
-        {
-            /** \note There are no relavant nodes below this node. */
-            return null;
-        }
-
         public object Visit(IntegerLiteral that)
         {
             /** \note There are no relavant nodes below this node. */

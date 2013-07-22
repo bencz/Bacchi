@@ -48,7 +48,6 @@ namespace Bacchi.Syntax
         object Visit(IdentifierType that);
         object Visit(IfStatement that);
         object Visit(IntegerDefinition that);
-        object Visit(IntegerExpression that);
         object Visit(IntegerLiteral that);
         object Visit(IntegerType that);
         object Visit(LetStatement that);
