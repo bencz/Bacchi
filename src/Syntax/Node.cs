@@ -65,6 +65,7 @@ namespace Bacchi.Syntax
             }
         }
 
+        /** Cached reference to the topmost node in the Abstract Syntax Tree (for fast access from below). */
         private Program _world;
         /** The topmost node in the system. */
         public Program World
@@ -72,7 +73,12 @@ namespace Bacchi.Syntax
             get
             {
                 if (_world == null)
-                    _world = _above.World;
+                {
+                    if (_above == null)
+                        _world = (Program) this;
+                    else
+                        _world = _above.World;
+                }
                 return _world;
             }
         }
