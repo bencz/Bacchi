@@ -30,6 +30,7 @@ namespace Bacchi.Syntax
 {
     public class ArrayReference: Reference
     {
+#region Literal attributes
         private Reference _reference;
         public Reference Reference
         {
@@ -41,6 +42,15 @@ namespace Bacchi.Syntax
         {
             get { return _expression; }
         }
+#endregion
+
+#region Synthetic attributes
+        protected override TypeKind ComputeBaseType
+        {
+            /** \todo Return the proper base type of multi-dimensional arrays. */
+            get { return _reference.BaseType; }
+        }
+#endregion
 
         public ArrayReference(Position position, Reference reference, Expression expression):
             base(NodeKind.ArrayReference, position)

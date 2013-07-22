@@ -1,7 +1,7 @@
 /** \file
  *  Main task list (to-do list).
  *
- *  \todo Add a way of checking if an expression is constant.
+ *  \todo Eliminate \c symbols parameter from \c Equal() and rename \c Equal() to \c Compare().
  *  \todo Add a recursive \c Compare() method that compares two sub-trees recursively.
  */
 

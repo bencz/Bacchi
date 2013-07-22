@@ -30,11 +30,24 @@ namespace Bacchi.Syntax
 {
     public class IdentifierReference: Reference
     {
+#region Literal attributes
         private string _name;
         public string Name
         {
             get { return _name; }
         }
+#endregion
+
+#region Synthetic attributes
+        protected override TypeKind ComputeBaseType
+        {
+            get
+            {
+                Definition definition = this.World.Symbols.Lookup(this.Position, _name);
+                return definition.BaseType;
+            }
+        }
+#endregion
 
         public IdentifierReference(Position position, string name):
             base(NodeKind.IdentifierReference, position)

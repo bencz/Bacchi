@@ -30,6 +30,24 @@ namespace Bacchi.Syntax
 {
     public abstract class Reference: Node
     {
+#region Literal attributes
+#endregion
+
+#region Synthetic attributes
+        private TypeKind _basetype = TypeKind.Invalid;
+        public TypeKind BaseType
+        {
+            get
+            {
+                if (_basetype == TypeKind.Invalid)
+                    _basetype = this.ComputeBaseType;
+                return _basetype;
+            }
+        }
+
+        protected abstract TypeKind ComputeBaseType { get; }
+#endregion
+
         public Reference(NodeKind kind, Position position):
             base(kind, position)
         {
