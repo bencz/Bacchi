@@ -31,11 +31,20 @@ namespace Bacchi.Syntax
     /** Class which represents a single constant definition. */
     public class ConstantDefinition: Definition
     {
+#region Literal attributes
         private Literal _literal;
         public Literal Literal
         {
             get { return _literal; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return _literal.BaseType; }
+        }
+#endregion
 
         /** Constructor for the \c ConstantDefinition class. */
         public ConstantDefinition(Position position, string name, Literal literal):

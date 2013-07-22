@@ -31,6 +31,16 @@ namespace Bacchi.Syntax
     /** Class which represents a single integer variable definition. */
     public class IntegerDefinition: Definition
     {
+#region Literal attributes
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Integer; }
+        }
+#endregion
+
         /** Constructor for the \c IntegerDefinition class. */
         public IntegerDefinition(Position position, string name):
             base(NodeKind.IntegerDefinition, position, name)

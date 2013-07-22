@@ -31,11 +31,20 @@ namespace Bacchi.Syntax
     /** Class which represents a single procedure definition. */
     public class ProcedureCompletion: Definition
     {
+#region Literal attributes
         private Block _block;
         public Block Block
         {
             get { return _block; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Procedure; }
+        }
+#endregion
 
         /** Constructor for the \c ProcedureCompletion class. */
         public ProcedureCompletion(Position position, string name, Block block):

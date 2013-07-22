@@ -28,6 +28,7 @@ namespace Bacchi.Syntax
 {
     public class UnaryExpression: Expression
     {
+        /** Literal attributes. */
         private UnaryKind _operator;
         public UnaryKind Operator
         {
@@ -38,6 +39,15 @@ namespace Bacchi.Syntax
         public Expression Expression
         {
             get { return _expression; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get
+            {
+                return _expression.BaseType;
+            }
         }
 
         public UnaryExpression(Position position, UnaryKind @operator, Expression expression):

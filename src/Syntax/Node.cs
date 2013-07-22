@@ -65,6 +65,18 @@ namespace Bacchi.Syntax
             }
         }
 
+        private Program _world;
+        /** The topmost node in the system. */
+        public Program World
+        {
+            get
+            {
+                if (_world == null)
+                    _world = _above.World;
+                return _world;
+            }
+        }
+
         public Node(NodeKind kind, Position position)
         {
             _kind     = kind;

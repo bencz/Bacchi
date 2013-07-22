@@ -19,7 +19,7 @@
 #endregion
 
 /** \file
- *  Defines the \c PopulateSymbolTablePass class, which traverses the tree and builds the symbol table.
+ *  Defines the \c CheckStaticTypesPass class, which traverses the AST and checks if all staticically types items are valid.
  */
 
 using Bacchi.Kernel;                    // Error
@@ -27,14 +27,14 @@ using Bacchi.Syntax;
 
 namespace Bacchi.Passes
 {
-    /** Populates the global symbol table with symbols from the AST. */
-    public class PopulateSymbolTablePass: Visitor
+    /** Checks the static type constraints of the GCL language. */
+    public class CheckStaticTypesPass: Visitor
     {
-        /** Cache of the global symbol table found in the topmost \c Program node. */
         private Symbols _symbols;
 
-        public PopulateSymbolTablePass()
+        public CheckStaticTypesPass(Symbols symbols)
         {
+            _symbols = symbols;
         }
 
         public void Visit(Node[] nodes)
@@ -45,25 +45,25 @@ namespace Bacchi.Passes
 
         public object Visit(Argument that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note Nothing to do, the \c CallStatement node performs the checks of arguments and parameters. */
             return null;
         }
 
         public object Visit(ArrayExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \todo Check that the array index type matches the base type of array expression. */
             return null;
         }
 
         public object Visit(ArrayReference that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note Check that the index expression is of the same type as the array's base type. */
             return null;
         }
 
         public object Visit(ArrayType that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \todo Check that the array's base type is either Boolean or integer. */
             return null;
         }
 
@@ -109,7 +109,8 @@ namespace Bacchi.Passes
 
         public object Visit(CallStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \todo Fetch the \c ProcedureDefinition for the called procedure and check the arguments one by one. */
+            Definition procdef = _symbols.Lookup(that.Name);
             return null;
         }
 
@@ -259,15 +260,8 @@ namespace Bacchi.Passes
 
         public object Visit(Program that)
         {
-            // Cache the global symbol table locally.
-            _symbols = that.Symbols;
-
             foreach (File file in that.Files)
                 file.Visit(this);
-
-            // Release the cached symbol table.
-            _symbols = null;
-
             return that;
         }
 
@@ -356,4 +350,5 @@ namespace Bacchi.Passes
         }
     }
 }
+
 

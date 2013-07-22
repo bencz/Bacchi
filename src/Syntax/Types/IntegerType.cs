@@ -29,6 +29,14 @@ namespace Bacchi.Syntax
     /** Class which represents the \c integer keyword in a source program. */
     public class IntegerType: Type
     {
+        /** Literal attributes. */
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Integer; }
+        }
+
         /** Constructor for the \c IntegerType class. */
         public IntegerType(Position position):
             base(NodeKind.IntegerType, position)

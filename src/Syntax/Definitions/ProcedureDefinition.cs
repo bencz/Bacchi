@@ -31,6 +31,7 @@ namespace Bacchi.Syntax
     /** Class which represents a single procedure definition (a declaration and a body). */
     public class ProcedureDefinition: Definition
     {
+#region Literal attributes
         private Parameter[] _parameters;
         public Parameter[] Parameters
         {
@@ -42,6 +43,14 @@ namespace Bacchi.Syntax
         {
             get { return _block; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Procedure; }
+        }
+#endregion
 
         /** Constructor for the \c ProcedureDefinition class. */
         public ProcedureDefinition(Position position, string name, Parameter[] parameters, Block block):

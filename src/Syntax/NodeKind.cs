@@ -56,7 +56,7 @@ namespace Bacchi.Syntax
         BinaryExpression,
         IdentifierExpression,
         IntegerExpression,
-        MemberExpression,
+        ModuleIndexExpression,
         ParenthesisExpression,
         RelationalExpression,
         TupleExpression,

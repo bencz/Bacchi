@@ -28,6 +28,11 @@ namespace Bacchi.Syntax
 {
     public abstract class Type: Node
     {
+        /** Literal attributes. */
+
+        /** Synthetic attributes. */
+        public abstract TypeKind BaseType { get; }
+
         public Type(NodeKind kind, Position position):
             base(kind, position)
         {

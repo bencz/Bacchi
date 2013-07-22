@@ -28,6 +28,14 @@ namespace Bacchi.Syntax
 {
     public class BooleanType: Type
     {
+        /** Literal attributes. */
+
+        /** Synthetic attributes.*/
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Boolean; }
+        }
+
         public BooleanType(Position position):
             base(NodeKind.BooleanType, position)
         {

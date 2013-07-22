@@ -28,6 +28,7 @@ namespace Bacchi.Syntax
 {
     public class TupleIndexExpression: Expression
     {
+#region Literal attributes
         private Expression _prefix;
         public Expression Prefix
         {
@@ -39,6 +40,32 @@ namespace Bacchi.Syntax
         {
             get { return _index; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get
+            {
+                /** Look up the Nth field in the definition of the tuple and return its type. */
+                if (_prefix.Kind != NodeKind.IdentifierExpression)
+                    throw new InternalError("Expected identifier but found: " + _prefix.Kind.ToString());
+
+                string name = ((IdentifierExpression) _prefix).Name;
+                Definition definition = this.World.Symbols.Lookup(name);
+                if (definition == null)
+                    throw new Error(_prefix.Position, 0, "Symbol not found: " + name);
+
+                if (definition.Kind != NodeKind.TupleDefinition)
+                    throw new Error(_prefix.Position, 0, "Expected tuple definition");
+                TupleDefinition tuple = (TupleDefinition) definition;
+                if (_index < 0 || _index >= tuple.Types.Length)
+                    throw new Error(_prefix.Position, 0, "Tuple index outside valid range");
+
+                return tuple.Types[_index].BaseType;
+            }
+        }
+#endregion
 
         public TupleIndexExpression(Position position, Expression prefix, int index):
             base(NodeKind.TupleIndexExpression, position)

@@ -28,11 +28,25 @@ namespace Bacchi.Syntax
 {
     public class IdentifierType: Type
     {
+        /** Literal attributes. */
         private string _name;
         /** The name of the type being referenced. */
         public string Name
         {
             get { return _name; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get
+            {
+                Definition definition = this.World.Symbols.Lookup(_name);
+                if (definition == null)
+                    throw new Error(this.Position, 0, "Unknown symbol: " + _name);
+
+                return definition.BaseType;
+            }
         }
 
         /** Constructor for the \c IdentifierType class. */

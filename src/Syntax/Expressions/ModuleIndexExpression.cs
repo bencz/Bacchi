@@ -19,7 +19,7 @@
 #endregion
 
 /** \file
- *  Defines the \c MemberExpression class, which represents a member expression (name.field).
+ *  Defines the \c ModuleIndexExpression class, which represents a module index expression (module.symbol).
  *
  *  \note GCL allows the field part to be either an identifier or an integer.
  */
@@ -28,8 +28,9 @@ using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    public class MemberExpression: Expression
+    public class ModuleIndexExpression: Expression
     {
+#region Literal attributes
         private Expression _prefix;
         public Expression Prefix
         {
@@ -37,13 +38,33 @@ namespace Bacchi.Syntax
         }
 
         private string _field;
+        /** The name of the field in the public interface part of the specified module. */
         public string Field
         {
             get { return _field; }
         }
+#endregion
 
-        public MemberExpression(Position position, Expression prefix, string field):
-            base(NodeKind.MemberExpression, position)
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get
+            {
+                /** \todo Make the Checker check that \c ModuleIndexExpression.Prefix is a module name (eliminate the code below). */
+                string name = ((IdentifierExpression) _prefix).Name;
+                Definition definition = this.World.Symbols.Lookup(name);
+                if (definition == null)
+                    throw new Error(_prefix.Position, 0, "Module '" + name + "' not found");
+                if (definition.Kind != NodeKind.Module)
+                    throw new Error(_prefix.Position, 0, "Expected a module name");
+
+                return definition.BaseType;
+            }
+        }
+#endregion
+
+        public ModuleIndexExpression(Position position, Expression prefix, string field):
+            base(NodeKind.ModuleIndexExpression, position)
         {
             _prefix = prefix;
             _prefix.Above = this;

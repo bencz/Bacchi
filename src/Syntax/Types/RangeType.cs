@@ -28,6 +28,7 @@ namespace Bacchi.Syntax
 {
     public class RangeType: Type
     {
+        /** Literal attributes. */
         private Type _type;
         public Type Type
         {
@@ -44,6 +45,12 @@ namespace Bacchi.Syntax
         public Expression Upper
         {
             get { return _upper; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return _type.BaseType; }
         }
 
         public override bool Equal(Symbols symbols, Type other)

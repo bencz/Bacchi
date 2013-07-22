@@ -31,11 +31,27 @@ namespace Bacchi.Syntax
     /** Class which represents a single variable definition. */
     public class VariableDefinition: Definition
     {
+#region Literal attributes
         private string _type;
         public string Type
         {
             get { return _type; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get
+            {
+                Definition definition = this.World.Symbols.Lookup(_type);
+                if (definition == null)
+                    throw new Error(this.Position, 0, "Unknown type: " + _type);
+
+                return definition.BaseType;
+            }
+        }
+#endregion
 
         /** Constructor for the \c VariableDefinition class. */
         public VariableDefinition(Position position, string name, string type):

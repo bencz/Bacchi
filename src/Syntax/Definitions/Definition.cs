@@ -30,12 +30,18 @@ namespace Bacchi.Syntax
 {
     public abstract class Definition: Node
     {
+#region Literal attributes
         private string _name;
         /** The name of the definition. */
         public string Name
         {
             get { return _name; }
         }
+#endregion
+
+#region Synthetic attributes
+        public abstract TypeKind BaseType { get; }
+#endregion
 
         public Definition(NodeKind kind, Position position, string name):
             base(kind, position)

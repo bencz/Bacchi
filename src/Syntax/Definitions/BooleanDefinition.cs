@@ -31,6 +31,16 @@ namespace Bacchi.Syntax
     /** Class which represents a single boolean variable definition. */
     public class BooleanDefinition: Definition
     {
+#region Literal attributes
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Boolean; }
+        }
+#endregion
+
         /** Constructor for the \c BooleanDefinition class. */
         public BooleanDefinition(Position position, string name):
             base(NodeKind.BooleanDefinition, position, name)

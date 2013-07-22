@@ -31,11 +31,20 @@ namespace Bacchi.Syntax
     /** Class which represents a single type definition. */
     public class TypeDefinition: Definition
     {
+#region Literal attributes
         private Type _type;
         public Type Type
         {
             get { return _type; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return _type.BaseType; }
+        }
+#endregion
 
         /** Constructor for the \c TypeDefinition class. */
         public TypeDefinition(Position position, string name, Type type):

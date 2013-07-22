@@ -28,10 +28,17 @@ namespace Bacchi.Syntax
 {
     public class IntegerExpression: Expression
     {
+        /** Literal attributes. */
         private int _value;
         public int Value
         {
             get { return _value; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Integer; }
         }
 
         public IntegerExpression(Position position, int value):

@@ -46,6 +46,11 @@ namespace Bacchi.Syntax
             get { return _other; }
         }
 
+        public override TypeKind BaseType
+        {
+            get { return _first.BaseType; }
+        }
+
         public BinaryExpression(Position position, BinaryKind @operator, Expression first, Expression other):
             base(NodeKind.BinaryExpression, position)
         {

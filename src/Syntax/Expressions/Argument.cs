@@ -30,10 +30,17 @@ namespace Bacchi.Syntax
 {
     public class Argument: Expression
     {
+        /** Literal attributes. */
         private Expression _value;
         public Expression Value
         {
             get { return _value; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return _value.BaseType; }
         }
 
         public Argument(Position position, Expression value):

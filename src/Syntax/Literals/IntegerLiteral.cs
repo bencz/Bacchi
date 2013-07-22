@@ -29,10 +29,17 @@ namespace Bacchi.Syntax
     /** Class which represents a single integer literal. */
     public class IntegerLiteral: Literal
     {
+        /** Literal attributes. */
         protected int _value;
         public int Value
         {
             get { return _value; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Integer; }
         }
 
         /** Constructor for the \c IntegerLiteral class. */

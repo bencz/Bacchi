@@ -30,11 +30,19 @@ namespace Bacchi.Syntax
 {
     public class TupleType: Type
     {
+        /** Literal attributes. */
+
         private Type[] _types;
         /** One type per tuple member. */
         public Type[] Types
         {
             get { return _types; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Tuple; }
         }
 
         /** Constructor for the \c TupleType class. */

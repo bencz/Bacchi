@@ -30,6 +30,7 @@ namespace Bacchi.Syntax
 {
     public class Module: Definition
     {
+#region Literal attributes
         private Definition[] _definitions;
         public Definition[] Definitions
         {
@@ -41,6 +42,14 @@ namespace Bacchi.Syntax
         {
             get { return _block; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Module; }
+        }
+#endregion
 
         /** Constructor for the \c Module class.
          *

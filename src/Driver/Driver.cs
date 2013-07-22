@@ -52,12 +52,10 @@ namespace Bacchi.Driver
                     dumper.Close();
                 }
 #endif
-
                 // Fill out the inherited and synthetic attributes in the AST.
-                Symbols symbols = new Symbols();
                 Visitor[] passes = new Visitor[]
                 {
-                    new PopulateSymbolTablePass(symbols)
+                    new PopulateSymbolTablePass()
                 };
                 foreach (Visitor pass in passes)
                     program = (Program) pass.Visit(program);
@@ -65,10 +63,9 @@ namespace Bacchi.Driver
 #if TEST
                 // Dump symbol table to 'program.sym' file.
                 var symbol_dumper = System.IO.File.CreateText("program.sym");
-                symbols.Dump(symbol_dumper);
+                program.Symbols.Dump(symbol_dumper);
                 symbol_dumper.Close();
 #endif
-
 
                 var writer = new Bacchi.Writer.C.Writer("program.c");
                 try
@@ -94,6 +91,9 @@ namespace Bacchi.Driver
             {
                 System.Console.WriteLine("Error: " + that.Message);
                 result = 1;
+#if TEST
+                throw;
+#endif
             }
 
             return result;

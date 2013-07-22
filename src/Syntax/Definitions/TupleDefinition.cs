@@ -31,12 +31,21 @@ namespace Bacchi.Syntax
     /** Class which represents a single tuple variable definition. */
     public class TupleDefinition: Definition
     {
+#region Literal attributes
         private Type[] _types;
         /** The list of types of the fields of the tuple variable. */
         public Type[] Types
         {
             get { return _types; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Tuple; }
+        }
+#endregion
 
         /** Constructor for the \c TupleDefinition class. */
         public TupleDefinition(Position position, string name, Type[] types):

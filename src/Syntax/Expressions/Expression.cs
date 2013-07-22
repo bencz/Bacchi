@@ -35,6 +35,8 @@ namespace Bacchi.Syntax
         {
         }
 
+        public abstract TypeKind BaseType { get; }
+
         public static Expression ParseFactor(Tokens tokens)
         {
             Token start = tokens.Peek;
@@ -60,10 +62,16 @@ namespace Bacchi.Syntax
                             switch (tokens.Peek.Kind)
                             {
                                 case TokenKind.Identifier:
+                                {
+                                    Token other = tokens.Match(TokenKind.Identifier);
+                                    result = new ModuleIndexExpression(first.Position, result, other.Text);
+                                    break;
+                                }
+
                                 case TokenKind.Integer:
                                 {
-                                    Token other = tokens.Match(tokens.Peek.Kind);
-                                    result = new MemberExpression(first.Position, result, other.Text);
+                                    Token other = tokens.Match(TokenKind.Integer);
+                                    result = new TupleIndexExpression(first.Position, result, int.Parse(other.Text));
                                     break;
                                 }
 

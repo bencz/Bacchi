@@ -28,6 +28,7 @@ namespace Bacchi.Syntax
 {
     public class ArrayType: Type
     {
+        /** Literal attributes. */
         private Type _base;
         public Type Base
         {
@@ -38,6 +39,12 @@ namespace Bacchi.Syntax
         public string Name
         {
             get { return _name; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Array; }
         }
 
         public ArrayType(Position position, Type @base, string name):

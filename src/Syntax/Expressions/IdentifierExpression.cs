@@ -34,6 +34,19 @@ namespace Bacchi.Syntax
             get { return _name; }
         }
 
+        public override TypeKind BaseType
+        {
+            get
+            {
+                Symbols symbols = this.World.Symbols;
+                Definition definition = symbols.Lookup(_name);
+                if (definition == null)
+                    throw new Error(this.Position, 0, "Unknown symbol: " + _name);
+
+                return definition.BaseType;
+            }
+        }
+
         public IdentifierExpression(Position position, string name):
             base(NodeKind.IdentifierExpression, position)
         {

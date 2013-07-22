@@ -29,10 +29,17 @@ namespace Bacchi.Syntax
     /** Class which represents a single boolean literal. */
     public class StringLiteral: Literal
     {
+        /** Literal attributes. */
         protected string _value;
         public string Value
         {
             get { return _value; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.String; }
         }
 
         /** Constructor for the \c StringLiteral class. */

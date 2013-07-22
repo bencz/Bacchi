@@ -384,18 +384,6 @@ namespace Bacchi.Writer.Dumper
             return null;
         }
 
-        public object Visit(MemberExpression that)
-        {
-            Enter(that);
-            Print("Prefix", that.Prefix);
-            Print("Field", that.Field);
-            Leave(that);
-
-            Visit(that.Prefix);
-
-            return null;
-        }
-
         public object Visit(Module that)
         {
             Enter(that);
@@ -405,6 +393,18 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.Definitions);
             Visit(that.Block);
+
+            return null;
+        }
+
+        public object Visit(ModuleIndexExpression that)
+        {
+            Enter(that);
+            Print("Prefix", that.Prefix);
+            Print("Field", that.Field);
+            Leave(that);
+
+            Visit(that.Prefix);
 
             return null;
         }

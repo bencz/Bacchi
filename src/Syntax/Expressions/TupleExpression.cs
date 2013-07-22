@@ -28,11 +28,20 @@ namespace Bacchi.Syntax
 {
     public class TupleExpression: Expression
     {
+#region Literal attributes
         private Expression[] _expressions;
         public Expression[] Expressions
         {
             get { return _expressions; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Tuple; }
+        }
+#endregion
 
         public TupleExpression(Position position, Expression[] expressions):
             base(NodeKind.TupleExpression, position)

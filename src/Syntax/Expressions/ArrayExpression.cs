@@ -28,6 +28,7 @@ namespace Bacchi.Syntax
 {
     public class ArrayExpression: Expression
     {
+        /** Literal attributes. */
         private Expression _array;
         public Expression Array
         {
@@ -38,6 +39,12 @@ namespace Bacchi.Syntax
         public Expression Index
         {
             get { return _index; }
+        }
+
+        /** Synthetic attributes. */
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Array; }
         }
 
         public ArrayExpression(Position position, Expression array, Expression index):

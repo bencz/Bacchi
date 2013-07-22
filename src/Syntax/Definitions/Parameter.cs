@@ -32,6 +32,7 @@ namespace Bacchi.Syntax
 {
     public class Parameter: Definition
     {
+#region Literal attributes
         private ModeKind _mode;
         public ModeKind Mode
         {
@@ -43,6 +44,14 @@ namespace Bacchi.Syntax
         {
             get { return _type; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return _type.BaseType; }
+        }
+#endregion
 
         public Parameter(Position position, ModeKind mode, string name, Type type):
             base(NodeKind.Parameter, position, name)

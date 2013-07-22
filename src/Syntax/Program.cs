@@ -28,8 +28,23 @@ using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
+    /** Represents a single, multi-file GCL program. */
     public class Program: Node
     {
+        /** Global attributes used by virtually every node in the tree. */
+        private Symbols _symbols;
+        public Symbols Symbols
+        {
+            get { return _symbols; }
+            set
+            {
+                if (_symbols != null || value == null)
+                    throw new System.ArgumentException("value");
+                _symbols = value;
+            }
+        }
+
+        /** Attributes originating with the source code. */
         private File[] _files;
         public File[] Files
         {
@@ -39,6 +54,8 @@ namespace Bacchi.Syntax
         public Program(File[] files):
             base(NodeKind.Program, new Position())
         {
+            _symbols = new Symbols();
+
             _files = files;
             foreach (File file in _files)
                 file.Above = this;

@@ -31,11 +31,20 @@ namespace Bacchi.Syntax
     /** Class which represents a single procedure interface declaration. */
     public class ProcedureDeclaration: Definition
     {
+#region Literal attributes
         private Parameter[] _parameters;
         public Parameter[] Parameters
         {
             get { return _parameters; }
         }
+#endregion
+
+#region Synthetic attributes
+        public override TypeKind BaseType
+        {
+            get { return TypeKind.Procedure; }
+        }
+#endregion
 
         /** Constructor for the \c ProcedureDeclaration class. */
         public ProcedureDeclaration(Position position, string name, Parameter[] parameters):

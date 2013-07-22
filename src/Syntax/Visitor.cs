@@ -52,8 +52,8 @@ namespace Bacchi.Syntax
         object Visit(IntegerLiteral that);
         object Visit(IntegerType that);
         object Visit(LetStatement that);
-        object Visit(MemberExpression that);
         object Visit(Module that);
+        object Visit(ModuleIndexExpression that);
         object Visit(Parameter that);
         object Visit(ParenthesisExpression that);
         object Visit(ProcedureCompletion that);
