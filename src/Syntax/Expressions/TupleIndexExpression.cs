@@ -65,6 +65,16 @@ namespace Bacchi.Syntax
                 return tuple.Types[_index].BaseType;
             }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            get { return false; }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get { throw new InternalError("Cannot compute constant value of tuple index expression."); }
+        }
 #endregion
 
         public TupleIndexExpression(Position position, Expression prefix, int index):

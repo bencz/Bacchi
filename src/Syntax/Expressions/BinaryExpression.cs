@@ -28,6 +28,7 @@ namespace Bacchi.Syntax
 {
     public class BinaryExpression: Expression
     {
+#region Literal attributes
         private BinaryKind _operator;
         public BinaryKind Operator
         {
@@ -45,11 +46,126 @@ namespace Bacchi.Syntax
         {
             get { return _other; }
         }
+#endregion
 
+#region Synthetic attributes
         public override TypeKind BaseType
         {
             get { return _first.BaseType; }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            /** \note Use '&&' instead of '&' to avoid computing the right hand side if the left hand side is false. */
+            get { return _first.IsConstant && _other.IsConstant; }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get
+            {
+                if (!this.IsConstant)
+                    throw new InternalError("Attempt of evaluating a non-constant expression");
+
+                // Compute the result of the constant expression.
+                int first = _first.ConstantExpression;
+                int other = _other.ConstantExpression;
+                int result;
+                switch (_operator)
+                {
+                    case BinaryKind.Add:
+                        if (this.BaseType != TypeKind.Integer)
+                            throw new Error(this.Position, 0, "Type mismatch in constant addition");
+                        result = first + other;
+                        if (result < first && result < other)
+                            throw new Error(this.Position, 0, "Overflow in constant expression");
+                        break;
+
+                    case BinaryKind.And:
+                        if (this.BaseType != TypeKind.Boolean || this.BaseType != TypeKind.Integer)
+                            throw new Error(this.Position, 0, "Attempt of adding non-scalar expressions");
+                        result = first & other;
+                        break;
+
+                    case BinaryKind.Divide:
+                        if (this.BaseType != TypeKind.Integer)
+                            throw new Error(this.Position, 0, "Type mismatch in constant division");
+                        if (other == 0)
+                            throw new Error(this.Position, 0, "Division by zero in constant expression");
+                        result = first / other;
+                        break;
+
+                    case BinaryKind.Multiply:
+                        if (this.BaseType != TypeKind.Integer)
+                            throw new Error(this.Position, 0, "Type mismatch in constant multiplication");
+                        result = first * other;
+                        /** \todo Detect overflows in constant expression multiplications. */
+                        break;
+
+                    case BinaryKind.Or:
+                        result = first | other;
+                        break;
+
+                    case BinaryKind.Remainder:
+                        if (this.BaseType != TypeKind.Integer)
+                            throw new Error(this.Position, 0, "Type mismatch in constant remainder");
+                        if (other == 0)
+                            throw new Error(this.Position, 0, "Division by zero in constant expression");
+                        result = first % other;
+                        break;
+
+                    case BinaryKind.Subtract:
+                        if (this.BaseType != TypeKind.Integer)
+                            throw new Error(this.Position, 0, "Type mismatch in constant subtraction");
+                        result = first - other;
+                        if (result > first && result > other)
+                            throw new Error(this.Position, 0, "Underflow in constant expression");
+                        break;
+
+                    case BinaryKind.Equality:
+                        if (this.BaseType != TypeKind.Boolean)
+                            throw new Error(this.Position, 0, "Wrong type in constant relational '=' operation");
+                        result = (first == other) ? 1 : 0;
+                        break;
+
+                    case BinaryKind.Difference:
+                        if (this.BaseType != TypeKind.Boolean)
+                            throw new Error(this.Position, 0, "Wrong type in constant relational '#' operation");
+                        result = (first != other) ? 1 : 0;
+                        break;
+
+                    case BinaryKind.GreaterEqual:
+                        if (this.BaseType != TypeKind.Boolean)
+                            throw new Error(this.Position, 0, "Wrong type in constant relational '>=' operation");
+                        result = (first >= other) ? 1 : 0;
+                        break;
+
+                    case BinaryKind.GreaterThan:
+                        if (this.BaseType != TypeKind.Boolean)
+                            throw new Error(this.Position, 0, "Wrong type in constant relational '>' operation");
+                        result = (first > other) ? 1 : 0;
+                        break;
+
+                    case BinaryKind.LessEqual:
+                        if (this.BaseType != TypeKind.Boolean)
+                            throw new Error(this.Position, 0, "Wrong type in constant relational '<=' operation");
+                        result = (first <= other) ? 1 : 0;
+                        break;
+
+                    case BinaryKind.LessThan:
+                        if (this.BaseType != TypeKind.Boolean)
+                            throw new Error(this.Position, 0, "Wrong type in constant relational '<' operation");
+                        result = (first < other) ? 1 : 0;
+                        break;
+
+                    default:
+                        throw new InternalError("Invalid or unknown binary operator: " + _operator.ToString());
+                }
+
+                return result;
+            }
+        }
+#endregion
 
         public BinaryExpression(Position position, BinaryKind @operator, Expression first, Expression other):
             base(NodeKind.BinaryExpression, position)

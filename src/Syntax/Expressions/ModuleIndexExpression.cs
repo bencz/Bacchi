@@ -50,15 +50,34 @@ namespace Bacchi.Syntax
         {
             get
             {
-                /** \todo Make the Checker check that \c ModuleIndexExpression.Prefix is a module name (eliminate the code below). */
                 string name = ((IdentifierExpression) _prefix).Name;
                 Definition definition = this.World.Symbols.Lookup(name);
-                if (definition == null)
-                    throw new Error(_prefix.Position, 0, "Module '" + name + "' not found");
-                if (definition.Kind != NodeKind.Module)
-                    throw new Error(_prefix.Position, 0, "Expected a module name");
-
                 return definition.BaseType;
+            }
+        }
+
+        protected override bool ComputeIsConstant
+        {
+            get
+            {
+                string name = ((IdentifierExpression) _prefix).Name;
+                Definition definition = this.World.Symbols.Lookup(name);
+                return (definition.Kind == NodeKind.ConstantDefinition);
+            }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get
+            {
+                string name = ((IdentifierExpression) _prefix).Name;
+                ConstantDefinition definition = (ConstantDefinition) this.World.Symbols.Lookup(name);
+                if (definition.Literal.Kind == NodeKind.IntegerLiteral)
+                    return ((IntegerLiteral) definition.Literal).Value;
+                else if (definition.Literal.Kind == NodeKind.BooleanLiteral)
+                    return ((BooleanLiteral) definition.Literal).Value ? 1 : 0;
+                else
+                    throw new InternalError("Was that a mouse that just ran across your keyboard?");
             }
         }
 #endregion

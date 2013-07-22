@@ -41,6 +41,16 @@ namespace Bacchi.Syntax
         {
             get { return TypeKind.Tuple; }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            get { return false; }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get { throw new InternalError("Cannot compute constant value of tuple expression."); }
+        }
 #endregion
 
         public TupleExpression(Position position, Expression[] expressions):

@@ -29,18 +29,30 @@ namespace Bacchi.Syntax
     /** Class which represents a single boolean literal. */
     public class BooleanLiteral: Literal
     {
-        /** Literal attributes. */
+#region Literal attributes
         protected bool _value;
         public bool Value
         {
             get { return _value; }
         }
+#endregion
 
-        /** Synthetic attributes. */
+#region Synthetic attributes
         public override TypeKind BaseType
         {
             get { return TypeKind.Boolean; }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            get { return true; }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get { return _value ? 1 : 0; }
+        }
+#endregion
 
         /** Constructor for the \c BooleanLiteral class. */
         public BooleanLiteral(Position position, bool value):

@@ -28,18 +28,30 @@ namespace Bacchi.Syntax
 {
     public class ParenthesisExpression: Expression
     {
-        /** Literal attributes. */
+#region Literal attributes
         private Expression _expression;
         public Expression Expression
         {
             get { return _expression; }
         }
+#endregion
 
-        /** Synthetic attributes. */
+#region Synthetic attributes
         public override TypeKind BaseType
         {
             get { return _expression.BaseType; }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            get { return _expression.IsConstant; }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get { return _expression.ConstantExpression; }
+        }
+#endregion
 
         public ParenthesisExpression(Position position, Expression expression):
             base(NodeKind.ParenthesisExpression, position)

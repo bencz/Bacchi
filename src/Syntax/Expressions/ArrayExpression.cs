@@ -28,7 +28,7 @@ namespace Bacchi.Syntax
 {
     public class ArrayExpression: Expression
     {
-        /** Literal attributes. */
+#region Literal attributes
         private Expression _array;
         public Expression Array
         {
@@ -40,12 +40,24 @@ namespace Bacchi.Syntax
         {
             get { return _index; }
         }
+#endregion
 
-        /** Synthetic attributes. */
+#region Synthetic attributes
         public override TypeKind BaseType
         {
             get { return TypeKind.Array; }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            get { return false; }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get { throw new InternalError("Cannot evaluate array expression as a constant expression"); }
+        }
+#endregion
 
         public ArrayExpression(Position position, Expression array, Expression index):
             base(NodeKind.ArrayExpression, position)

@@ -28,7 +28,7 @@ namespace Bacchi.Syntax
 {
     public class UnaryExpression: Expression
     {
-        /** Literal attributes. */
+#region Literal attributes
         private UnaryKind _operator;
         public UnaryKind Operator
         {
@@ -40,8 +40,9 @@ namespace Bacchi.Syntax
         {
             get { return _expression; }
         }
+#endregion
 
-        /** Synthetic attributes. */
+#region Synthetic attributes
         public override TypeKind BaseType
         {
             get
@@ -49,6 +50,45 @@ namespace Bacchi.Syntax
                 return _expression.BaseType;
             }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            get { return _expression.IsConstant; }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get
+            {
+                int value = _expression.ConstantExpression;
+                int result;
+                switch (_operator)
+                {
+                    case UnaryKind.Minus:
+                        result = -value;
+                        break;
+
+                    case UnaryKind.Plus:
+                        result = +value;
+                        break;
+
+                    case UnaryKind.Not:
+                        if (_expression.BaseType == TypeKind.Boolean)
+                            result = (value == 0) ? 1 : 0;
+                        else if (_expression.BaseType == TypeKind.Integer)
+                            result = ~value;
+                        else
+                            throw new InternalError("Checker should have caught this: Unary NOT operation on non-scalar value");
+                        break;
+
+                    default:
+                        throw new InternalError("Unknown unary operator kind: " + _operator.ToString());
+
+                }
+                return result;
+            }
+        }
+#endregion
 
         public UnaryExpression(Position position, UnaryKind @operator, Expression expression):
             base(NodeKind.UnaryExpression, position)

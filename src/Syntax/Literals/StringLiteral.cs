@@ -29,18 +29,30 @@ namespace Bacchi.Syntax
     /** Class which represents a single boolean literal. */
     public class StringLiteral: Literal
     {
-        /** Literal attributes. */
+#region Literal attributes
         protected string _value;
         public string Value
         {
             get { return _value; }
         }
+#endregion
 
-        /** Synthetic attributes. */
+#region Synthetic attributes
         public override TypeKind BaseType
         {
             get { return TypeKind.String; }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            get { return false; }           /** \note GCL does not allow string operations in any form whatsover. */
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get { throw new InternalError("Checker should have caught attempt of using an operator on a string literal"); }
+        }
+#endregion
 
         /** Constructor for the \c StringLiteral class. */
         public StringLiteral(Position position, string value):

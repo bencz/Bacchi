@@ -28,24 +28,54 @@ namespace Bacchi.Syntax
 {
     public class IdentifierExpression: Expression
     {
+#region Literal attributes
         private string _name;
         public string Name
         {
             get { return _name; }
         }
+#endregion
 
+#region Synthetic attributes
         public override TypeKind BaseType
         {
             get
             {
-                Symbols symbols = this.World.Symbols;
-                Definition definition = symbols.Lookup(_name);
+                Definition definition = this.World.Symbols.Lookup(_name);
                 if (definition == null)
                     throw new Error(this.Position, 0, "Unknown symbol: " + _name);
 
                 return definition.BaseType;
             }
         }
+
+        protected override bool ComputeIsConstant
+        {
+            get
+            {
+                Definition definition = this.World.Symbols.Lookup(_name);
+                if (definition == null)
+                    throw new Error(this.Position, 0, "Unknown symbol: " + _name);
+
+                return (definition.Kind == NodeKind.ConstantDefinition);
+            }
+        }
+
+        protected override int ComputeConstantExpression
+        {
+            get
+            {
+                Definition definition = this.World.Symbols.Lookup(_name);
+                if (definition == null)
+                    throw new Error(this.Position, 0, "Unknown symbol: " + _name);
+
+                if (definition.Kind != NodeKind.ConstantDefinition)
+                    throw new InternalError("Attempt of computing value of non-constant expression");
+
+                return ((ConstantDefinition) definition).Literal.ConstantExpression;
+            }
+        }
+#endregion
 
         public IdentifierExpression(Position position, string name):
             base(NodeKind.IdentifierExpression, position)

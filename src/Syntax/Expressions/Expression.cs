@@ -30,12 +30,43 @@ namespace Bacchi.Syntax
 {
     public abstract class Expression: Node
     {
+#region Literal attributes
+#endregion
+
+#region Synthetic attributes
+        public abstract TypeKind BaseType { get; }
+
+        private int _constant = -1;
+        public bool IsConstant
+        {
+            get
+            {
+                if (_constant == -1)
+                    _constant = (ComputeIsConstant ? 1 : 0);
+                return (_constant == 0 ? false : true);
+            }
+        }
+
+        protected abstract bool ComputeIsConstant { get; }
+
+        private object _evaluated = null;
+        public int ConstantExpression
+        {
+            get
+            {
+                if (_evaluated == null)
+                    _evaluated = (object) ComputeConstantExpression;
+                return (int) _evaluated;
+            }
+        }
+
+        protected abstract int ComputeConstantExpression { get; }
+#endregion
+
         public Expression(NodeKind kind, Position position):
             base(kind, position)
         {
         }
-
-        public abstract TypeKind BaseType { get; }
 
         public static Expression ParseFactor(Tokens tokens)
         {
