@@ -111,6 +111,14 @@ namespace Bacchi.Syntax
             return null;
         }
 
+        public Definition Lookup(Position position, string name)
+        {
+            var result = Lookup(name);
+            if (result == null)
+                throw new Error(position, 0, name);
+            return result;
+        }
+
         public Definition Lookup(Position position, string module_name, string name)
         {
             if (!_modules.ContainsKey(module_name))
