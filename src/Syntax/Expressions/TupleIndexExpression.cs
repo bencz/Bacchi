@@ -57,10 +57,10 @@ namespace Bacchi.Syntax
                 if (definition.Kind != NodeKind.TupleDefinition)
                     throw new Error(_prefix.Position, 0, "Expected tuple definition");
                 TupleDefinition tuple = (TupleDefinition) definition;
-                if (_index < 0 || _index >= tuple.Types.Length)
+                if (_index <= 0 || _index > tuple.Types.Length)
                     throw new Error(_prefix.Position, 0, "Tuple index outside valid range");
 
-                return tuple.Types[_index].BaseType;
+                return tuple.Types[_index - 1].BaseType;
             }
         }
 

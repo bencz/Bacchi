@@ -68,6 +68,19 @@ namespace Bacchi.Syntax
             _modules[that.Name][""] = new Symbol(that, ScopeKind.Global);
         }
 
+        public void EnterModule(Module that, bool reusing)
+        {
+            if (!reusing)
+            {
+                EnterModule(that);
+                return;
+            }
+
+            if (!_modules.ContainsKey(that.Name))
+                throw new Error(that.Position, 0, "Module '" + that.Name + "' not defined");
+            _current = _modules[that.Name];
+        }
+
         public void LeaveModule(Module that)
         {
             _current = null;

@@ -395,7 +395,7 @@ namespace Bacchi.Passes
             if (definition.Kind != NodeKind.TupleDefinition)
                 throw new Error(that.Prefix.Position, 0, "Expected a variable of tuple type");
             TupleDefinition tuple = (TupleDefinition) definition;
-            if (that.Index < 0 || that.Index >= tuple.Types.Length)
+            if (that.Index <= 0 || that.Index > tuple.Types.Length)
                 throw new Error(that.Prefix.Position, 0, "Tuple index outside valid range");
 
             // Visit children.
