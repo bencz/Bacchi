@@ -67,7 +67,7 @@ namespace Bacchi.Driver
                 symbol_dumper.Close();
 #endif
 
-                var writer = new Bacchi.Writer.C.Writer("program.c");
+                var writer = new Bacchi.Writer.CPlusPlus.Writer("program");
                 try
                 {
                     writer.Visit(program);

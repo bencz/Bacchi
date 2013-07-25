@@ -19,23 +19,33 @@
 #endregion
 
 /** \file
- *  Defines the C source code writer.
+ *  Defines the C++ source code writer.
+ *
+ *  The transformation of a GCL program to a C++ program is roughly as follows:
+ *
+ *      1. For each module, create a corresponding class.
+ *      2. For each public symbol, create a corresponding public member.
+ *      3. For each private symbol, create a corresponding private member.
+ *      4. For each module code block, create a corresponding default constructor.
+ *      5. For each tuple, a global structure definition is made and then reused.
+ *
+ *  I initially tried to write a C code generator, but found that it made things too complicated for my taste.
  */
 
 using Bacchi.Kernel;                    // Error, Position
 using Bacchi.Syntax;
 
-namespace Bacchi.Writer.C
+namespace Bacchi.Writer.CPlusPlus
 {
-    /** Writer used to write C source code to a file. */
+    /** Writer used to write C++ source code to a file. */
     public class Writer: Visitor
     {
         private Symbols  _symbols;
         private Indenter _writer;
 
-        public Writer(string filename)
+        public Writer(string basename)
         {
-            _writer = new Indenter(filename, System.Text.Encoding.ASCII);
+            _writer = new Indenter(basename + ".cpp", System.Text.Encoding.ASCII);
         }
 
         public void Close()
@@ -47,12 +57,12 @@ namespace Bacchi.Writer.C
             _writer = null;
         }
 
-        public void Sweep(Node node)
+        public void Visit(Node node)
         {
             node.Visit(this);
         }
 
-        public void Sweep(Node[] nodes)
+        public void Visit(Node[] nodes)
         {
             foreach (Node node in nodes)
                 node.Visit(this);
@@ -61,7 +71,7 @@ namespace Bacchi.Writer.C
         public object Visit(Argument that)
         {
             /** \todo Determine if a value or reference parameter; the latter must sometimes be prefixed by an ampersand (&). */
-            Sweep(that.Value);
+            Visit(that.Value);
 
             return null;
         }
@@ -69,9 +79,9 @@ namespace Bacchi.Writer.C
         public object Visit(ArrayExpression that)
         {
             /** \todo If an array slice, call memcpy(), otherwise use simple assignment. */
-            Sweep(that.Array);
+            Visit(that.Array);
             _writer.Write('[');
-            Sweep(that.Index);
+            Visit(that.Index);
             _writer.Write(']');
 
             return null;
@@ -79,31 +89,31 @@ namespace Bacchi.Writer.C
 
         public object Visit(ArrayReference that)
         {
-            Sweep(that.Reference);
+            Visit(that.Reference);
             _writer.Write('[');
-            Sweep(that.Expression);
+            Visit(that.Expression);
             _writer.Write(']');
             return null;
         }
 
         public object Visit(ArrayType that)
         {
-            /** \todo ArrayType must be handled by the parent node as the type and the name must be output. */
+            Visit(that.Base);
             return null;
         }
 
         public object Visit(Assignment that)
         {
-            Sweep(that.Reference);
+            Visit(that.Reference);
             _writer.Write(" = ");
-            Sweep(that.Expression);
+            Visit(that.Expression);
             _writer.WriteLine(';');
             return null;
         }
 
         public object Visit(BinaryExpression that)
         {
-            Sweep(that.First);
+            Visit(that.First);
             string value;
             switch (that.Operator)
             {
@@ -124,14 +134,14 @@ namespace Bacchi.Writer.C
             _writer.Write(' ');
             _writer.Write(value);
             _writer.Write(' ');
-            Sweep(that.Other);
+            Visit(that.Other);
             return null;
         }
 
         public object Visit(Block that)
         {
-            Sweep(that.Definitions);
-            Sweep(that.Statements);
+            Visit(that.Definitions);
+            Visit(that.Statements);
 
             return null;
         }
@@ -162,7 +172,7 @@ namespace Bacchi.Writer.C
             _writer.Write('(');
             foreach (Argument argument in that.Arguments)
             {
-                Sweep(argument);
+                Visit(argument);
                 if (argument != that.Arguments[that.Arguments.Length - 1])
                     _writer.Write(", ");
             }
@@ -172,6 +182,17 @@ namespace Bacchi.Writer.C
 
         public object Visit(ConstantDefinition that)
         {
+            _writer.Write("const ");
+            switch (that.Literal.BaseType)
+            {
+                case TypeKind.Boolean: _writer.Write("bool "); break;
+                case TypeKind.Integer: _writer.Write("int "); break;
+                default              : throw new System.ArgumentException("that.Literal.BaseType");
+            }
+            _writer.Write(that.Name);
+            _writer.Write(" = ");
+            Visit(that.Literal);
+            _writer.WriteLine(';');
             return null;
         }
 
@@ -185,12 +206,12 @@ namespace Bacchi.Writer.C
                 if (guard != that.Guards[0])
                     _writer.Write("else ");
                 _writer.Write("if (");
-                Sweep(guard.Expression);
+                Visit(guard.Expression);
                 _writer.WriteLine(')');
                 _writer.WriteLine('{');
                 _writer.Indent();
                 foreach (Statement statement in guard.Statements)
-                    Sweep(statement);
+                    Visit(statement);
                 _writer.Dedent();
                 _writer.WriteLine('}');
             }
@@ -205,8 +226,14 @@ namespace Bacchi.Writer.C
 
         public object Visit(File that)
         {
-            _writer.WriteLine("/* FILE: {0} */", that.Name);
-            Sweep(that.Modules);
+            _writer.WriteLine("/******* STANDARD ENVIRONMENT *********/");
+            _writer.WriteLine("extern int  __gcl_integer_parse(void);");
+            _writer.WriteLine("extern void __gcl_integer_print(int value);");
+            _writer.WriteLine("extern void __gcl_string_print(const char *value);");
+            _writer.WriteLine();
+
+            _writer.WriteLine("/* SOURCE FILE: {0} */", that.Name);
+            Visit(that.Modules);
 
             return null;
         }
@@ -248,11 +275,11 @@ namespace Bacchi.Writer.C
                     _writer.Write("if (");
                 else
                     _writer.Write("else if (");
-                Sweep(guard.Expression);
+                Visit(guard.Expression);
                 _writer.WriteLine(')');
                 _writer.WriteLine('{');
                 _writer.Indent();
-                Sweep(guard.Statements);
+                Visit(guard.Statements);
                 _writer.Dedent();
                 _writer.WriteLine('}');
             }
@@ -284,7 +311,7 @@ namespace Bacchi.Writer.C
             /** \todo Generate a thread-safe procedure for each assignment and launch them as separate threads. */
             if (that.Assignments.Length > 1)
                 _writer.WriteLine("/* The next {0} statements are supposed to execute in parallel: */", that.Assignments.Length);
-            Sweep(that.Assignments);
+            Visit(that.Assignments);
             return null;
         }
 
@@ -292,10 +319,41 @@ namespace Bacchi.Writer.C
         {
             that.World.Symbols.EnterModule(that, true);
 
-            _writer.WriteLine("/* MODULE: {0} */", that.Name);
+            _writer.WriteLine("/* SOURCE MODULE: {0} */", that.Name);
 
-            Sweep(that.Definitions);
-            Sweep(that.Block);
+            _writer.Write("class _module_");
+            _writer.WriteLine(that.Name);
+            _writer.WriteLine('{');
+
+            // Output public definitions (including the default constructor that we create).
+            _writer.WriteLine("public:");
+            _writer.Indent();
+            _writer.Write("_module_");
+            _writer.Write(that.Name);
+            _writer.WriteLine("();");
+            _writer.WriteLine();
+            Visit(that.Definitions);
+            _writer.Dedent();
+
+            // Output private definitions in private part of class.
+            _writer.WriteLine("private:");
+            _writer.Indent();
+            Visit(that.Block.Definitions);
+            _writer.Dedent();
+            _writer.WriteLine("};");
+            _writer.WriteLine();
+
+            _writer.Write("_module_");
+            _writer.Write(that.Name);
+            _writer.Write("::_module_");
+            _writer.Write(that.Name);
+            _writer.WriteLine("()");
+            _writer.WriteLine('{');
+            _writer.Indent();
+            Visit(that.Block.Statements);
+            _writer.Dedent();
+            _writer.WriteLine("};");
+            _writer.WriteLine();
 
             that.World.Symbols.LeaveModule(that);
 
@@ -304,7 +362,7 @@ namespace Bacchi.Writer.C
 
         public object Visit(ModuleIndexExpression that)
         {
-            Sweep(that.Prefix);
+            Visit(that.Prefix);
             _writer.Write("__");
             _writer.Write(that.Field);
             return null;
@@ -312,7 +370,7 @@ namespace Bacchi.Writer.C
 
         public object Visit(Parameter that)
         {
-            Sweep(that.Type);
+            Visit(that.Type);
             _writer.Write(' ');
             if (that.Mode == ModeKind.Reference)
                 _writer.Write('*');
@@ -323,7 +381,7 @@ namespace Bacchi.Writer.C
         public object Visit(ParenthesisExpression that)
         {
             _writer.Write('(');
-            Sweep(that.Expression);
+            Visit(that.Expression);
             _writer.Write(')');
             return null;
         }
@@ -345,14 +403,14 @@ namespace Bacchi.Writer.C
             _writer.Write('(');
             foreach (Parameter parameter in that.Parameters)
             {
-                Sweep(parameter);
+                Visit(parameter);
                 if (parameter != that.Parameters[that.Parameters.Length - 1])
                     _writer.Write(", ");
             }
             _writer.WriteLine(')');
             _writer.WriteLine('{');
             _writer.Indent();
-            Sweep(that.Block);
+            Visit(that.Block);
             _writer.Dedent();
             _writer.WriteLine('}');
 
@@ -367,7 +425,29 @@ namespace Bacchi.Writer.C
             _writer.WriteLine("/* DO NOT EDIT: This file was generated by Bacchi v0.01. */");
             _writer.WriteLine();
 
-            Sweep(that.Files);
+            Visit(that.Files);
+
+            _writer.WriteLine("int main(void)");
+            _writer.WriteLine('{');
+            _writer.Indent();
+            /** \note Create an instance of each module's class so as to ensure that the code executes as per the specification. */
+            foreach (File file in that.Files)
+            {
+                foreach (Module module in file.Modules)
+                {
+                    _writer.Write("_module_");
+                    _writer.Write(module.Name);
+                    _writer.Write(" *_module_");
+                    _writer.Write(module.Name);
+                    _writer.Write("_instance = new _module_");
+                    _writer.Write(module.Name);
+                    _writer.WriteLine("();");
+                }
+            }
+
+            _writer.WriteLine("return 0;");
+            _writer.Dedent();
+            _writer.WriteLine('}');
 
             _symbols = null;
 
@@ -376,7 +456,7 @@ namespace Bacchi.Writer.C
 
         public object Visit(RangeType that)
         {
-            Sweep(that.Type);
+            Visit(that.Type);
             return null;
         }
 
@@ -384,7 +464,7 @@ namespace Bacchi.Writer.C
         {
             foreach (Reference reference in that.References)
             {
-                Sweep(reference);
+                Visit(reference);
                 _writer.WriteLine(" = __gcl_integer_parse();");
             }
             return null;
@@ -416,12 +496,10 @@ namespace Bacchi.Writer.C
             for (int i = 0; i < that.Types.Length; i++)
             {
                 Type type = that.Types[i];
-                Sweep(type);
+                Visit(type);
                 _writer.Write(" _");
                 _writer.Write((i + 1).ToString());
-
-                if (i != that.Types.Length - 1)
-                    _writer.Write("; ");
+                _writer.Write("; ");
             }
             _writer.Write(" } ");
             _writer.Write(that.Name);
@@ -434,7 +512,7 @@ namespace Bacchi.Writer.C
             _writer.Write("{ ");
             foreach (Expression expression in that.Expressions)
             {
-                Sweep(expression);
+                Visit(expression);
 
                 if (expression != that.Expressions[that.Expressions.Length - 1])
                     _writer.Write(", ");
@@ -445,7 +523,7 @@ namespace Bacchi.Writer.C
 
         public object Visit(TupleIndexExpression that)
         {
-            Sweep(that.Prefix);
+            Visit(that.Prefix);
             _writer.Write("._");
             _writer.Write(that.Index.ToString());
             return null;
@@ -457,12 +535,10 @@ namespace Bacchi.Writer.C
             for (int i = 0; i < that.Types.Length; i++)
             {
                 Type type = that.Types[i];
-                Sweep(type);
+                Visit(type);
                 _writer.Write(" _");
                 _writer.Write((i + 1).ToString());
-
-                if (i != that.Types.Length - 1)
-                    _writer.Write("; ");
+                _writer.Write("; ");
             }
             _writer.Write(" }");
 
@@ -471,6 +547,33 @@ namespace Bacchi.Writer.C
 
         public object Visit(TypeDefinition that)
         {
+            _writer.Write("typedef ");
+            Visit(that.Type);
+            _writer.Write(' ');
+            _writer.Write(that.Name);
+
+            /** Arrays must be output carefully because C++ expects the array size AFTER the array name. */
+            if (that.Type.Kind == NodeKind.ArrayType)   /** \todo Support multi-dimensional arrays. */
+            {
+                // Look up array bounds and output them inline without calling the visitor method for ArrayType.
+                ArrayType array = (ArrayType) that.Type;
+                Definition definition = that.World.Symbols.Lookup(array.Name);
+                if (definition == null)
+                    throw new InternalError("Checker should have caught this undefined symbol: " + array.Name);
+                if (definition.Kind != NodeKind.TypeDefinition)
+                    throw new InternalError("There's something spooky here...");
+
+                TypeDefinition typedef = (TypeDefinition) definition;
+                RangeType range = (RangeType) typedef.Type;
+                int lower = range.Lower.ConstantExpression;
+                int upper = range.Upper.ConstantExpression;
+                int width = (upper - lower + 1);
+                _writer.Write('[');
+                _writer.Write(width.ToString());
+                _writer.Write(']');
+            }
+
+            _writer.WriteLine(';');
             return null;
         }
 
@@ -505,7 +608,7 @@ namespace Bacchi.Writer.C
                 default:
                     throw new System.ArgumentException("that.Operator");
             }
-            Sweep(that.Expression);
+            Visit(that.Expression);
 
             return null;
         }
