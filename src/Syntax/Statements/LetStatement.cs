@@ -68,9 +68,9 @@ namespace Bacchi.Syntax
             return new LetStatement(start.Position, assignments);
         }
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

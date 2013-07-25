@@ -64,9 +64,9 @@ namespace Bacchi.Syntax
             return new Block(start.Position, definitions, statements);
         }
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

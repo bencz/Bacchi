@@ -57,9 +57,9 @@ namespace Bacchi.Syntax
         /** \note The \c Parse() method is found in \c ProcedureDefinition.Parse(). */
 
         /** Implements the Visitor pattern. */
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

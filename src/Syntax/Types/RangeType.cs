@@ -86,9 +86,9 @@ namespace Bacchi.Syntax
 
         /** Parsing is handled by \c Type.Parse(). */
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

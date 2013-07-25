@@ -42,9 +42,9 @@ namespace Bacchi.Syntax
             return new ReturnStatement(start.Position);
         }
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

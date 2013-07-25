@@ -89,6 +89,6 @@ namespace Bacchi.Syntax
             _position = new Position(position);     /** \note Make \b deep copy to avoid problems with updated references. */
         }
 
-        public abstract object Visit(Visitor that);
+        public abstract void Visit(Visitor that);
     }
 }

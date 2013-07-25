@@ -43,157 +43,157 @@ namespace Bacchi.Passes
                 node.Visit(this);
         }
 
-        public object Visit(Argument that)
+        public void Visit(Argument that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(ArrayExpression that)
+        public void Visit(ArrayExpression that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(ArrayReference that)
+        public void Visit(ArrayReference that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(ArrayType that)
+        public void Visit(ArrayType that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(Assignment that)
+        public void Visit(Assignment that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(BinaryExpression that)
+        public void Visit(BinaryExpression that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(Block that)
+        public void Visit(Block that)
         {
             foreach (Definition definition in that.Definitions)
                 definition.Visit(this);
             /** \note Don't visit the statements as they cannot create new symbols. */
 
-            return null;
+            return;
         }
 
-        public object Visit(BooleanDefinition that)
+        public void Visit(BooleanDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
-            return null;
+            return;
         }
 
-        public object Visit(BooleanLiteral that)
+        public void Visit(BooleanLiteral that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(BooleanType that)
+        public void Visit(BooleanType that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(CallStatement that)
+        public void Visit(CallStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(ConstantDefinition that)
+        public void Visit(ConstantDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
-            return null;
+            return;
         }
 
-        public object Visit(DoStatement that)
+        public void Visit(DoStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(File that)
+        public void Visit(File that)
         {
             Visit(that.Modules);
-            return null;
+            return;
         }
 
-        public object Visit(ForallStatement that)
+        public void Visit(ForallStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(Guard that)
+        public void Visit(Guard that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IdentifierExpression that)
+        public void Visit(IdentifierExpression that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IdentifierReference that)
+        public void Visit(IdentifierReference that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IdentifierType that)
+        public void Visit(IdentifierType that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IfStatement that)
+        public void Visit(IfStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IntegerDefinition that)
+        public void Visit(IntegerDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
-            return null;
+            return;
         }
 
-        public object Visit(IntegerLiteral that)
+        public void Visit(IntegerLiteral that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IntegerType that)
+        public void Visit(IntegerType that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(LetStatement that)
+        public void Visit(LetStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(Module that)
+        public void Visit(Module that)
         {
             _symbols.EnterModule(that);
 
@@ -202,44 +202,44 @@ namespace Bacchi.Passes
                 that.Block.Visit(this);
 
             _symbols.LeaveModule(that);
-            return null;
+            return;
         }
 
-        public object Visit(ModuleIndexExpression that)
+        public void Visit(ModuleIndexExpression that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(Parameter that)
+        public void Visit(Parameter that)
         {
             _symbols.Insert(that, ScopeKind.Local);
-            return null;
+            return;
         }
 
-        public object Visit(ParenthesisExpression that)
+        public void Visit(ParenthesisExpression that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(ProcedureCompletion that)
+        public void Visit(ProcedureCompletion that)
         {
             Node definition = _symbols.Lookup(that.Name);
             if (definition == null)
                 throw new Error(that.Position, 0, "Cannot complete undeclared procedure '" + that.Name + "'");
-            return null;
+            return;
         }
 
-        public object Visit(ProcedureDeclaration that)
+        public void Visit(ProcedureDeclaration that)
         {
             /** Create a procedure definition entry for the specified procedure, with its block part set to \c null. */
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
-            return null;
+            return;
         }
 
-        public object Visit(ProcedureDefinition that)
+        public void Visit(ProcedureDefinition that)
         {
             Node definition = _symbols.Lookup(that.Name);
             if (definition != null)
@@ -248,10 +248,10 @@ namespace Bacchi.Passes
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
 
-            return null;
+            return;
         }
 
-        public object Visit(Program that)
+        public void Visit(Program that)
         {
             // Cache the global symbol table locally.
             _symbols = that.Symbols;
@@ -261,92 +261,90 @@ namespace Bacchi.Passes
 
             // Release the cached symbol table.
             _symbols = null;
-
-            return that;
         }
 
-        public object Visit(RangeType that)
+        public void Visit(RangeType that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(ReadStatement that)
+        public void Visit(ReadStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(ReturnStatement that)
+        public void Visit(ReturnStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(SkipStatement that)
+        public void Visit(SkipStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(StringLiteral that)
+        public void Visit(StringLiteral that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(TupleDefinition that)
+        public void Visit(TupleDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
 
-            return null;
+            return;
         }
 
-        public object Visit(TupleExpression that)
+        public void Visit(TupleExpression that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(TupleIndexExpression that)
+        public void Visit(TupleIndexExpression that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(TupleType that)
+        public void Visit(TupleType that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(TypeDefinition that)
+        public void Visit(TypeDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
 
-            return null;
+            return;
         }
 
-        public object Visit(UnaryExpression that)
+        public void Visit(UnaryExpression that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(VariableDefinition that)
+        public void Visit(VariableDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
 
-            return null;
+            return;
         }
 
-        public object Visit(WriteStatement that)
+        public void Visit(WriteStatement that)
         {
             /** \note There are no relavant nodes below this node. */
-            return null;
+            return;
         }
     }
 }

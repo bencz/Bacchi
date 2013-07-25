@@ -114,9 +114,9 @@ namespace Bacchi.Syntax
             return arguments.ToArray();
         }
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

@@ -58,7 +58,9 @@ namespace Bacchi.Driver
                     new PopulateSymbolTablePass()
                 };
                 foreach (Visitor pass in passes)
-                    program = (Program) pass.Visit(program);
+                {
+                    pass.Visit(program);
+                }
 
 #if TEST
                 // Dump symbol table to 'program.sym' file.

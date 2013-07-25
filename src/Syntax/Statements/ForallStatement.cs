@@ -63,9 +63,9 @@ namespace Bacchi.Syntax
             return new ForallStatement(start.Position, variable, statements);
         }
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

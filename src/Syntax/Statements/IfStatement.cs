@@ -54,9 +54,9 @@ namespace Bacchi.Syntax
             return new IfStatement(start.Position, guards);
         }
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

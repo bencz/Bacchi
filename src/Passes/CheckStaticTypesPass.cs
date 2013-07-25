@@ -48,162 +48,162 @@ namespace Bacchi.Passes
                 node.Visit(this);
         }
 
-        public object Visit(Argument that)
+        public void Visit(Argument that)
         {
             /** \note Nothing to do, the \c CallStatement node performs the checks of arguments and parameters. */
-            return null;
+            return;
         }
 
-        public object Visit(ArrayExpression that)
+        public void Visit(ArrayExpression that)
         {
             /** \todo Check that the array index type matches the base type of array expression. */
-            return null;
+            return;
         }
 
-        public object Visit(ArrayReference that)
+        public void Visit(ArrayReference that)
         {
             /** \note Check that the index expression is of the same type as the array's base type. */
-            return null;
+            return;
         }
 
-        public object Visit(ArrayType that)
+        public void Visit(ArrayType that)
         {
             /** \todo Check that the array's base type is either Boolean or integer. */
-            return null;
+            return;
         }
 
-        public object Visit(Assignment that)
+        public void Visit(Assignment that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(BinaryExpression that)
+        public void Visit(BinaryExpression that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(Block that)
+        public void Visit(Block that)
         {
             foreach (Definition definition in that.Definitions)
                 definition.Visit(this);
             /** \note Don't visit the statements as they cannot create new symbols. */
 
-            return null;
+            return;
         }
 
-        public object Visit(BooleanDefinition that)
+        public void Visit(BooleanDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
-            return null;
+            return;
         }
 
-        public object Visit(BooleanLiteral that)
+        public void Visit(BooleanLiteral that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(BooleanType that)
+        public void Visit(BooleanType that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(CallStatement that)
+        public void Visit(CallStatement that)
         {
             /** \todo Fetch the \c ProcedureDefinition for the called procedure and check the arguments one by one. */
             Definition procdef = _symbols.Lookup(that.Name);
-            return null;
+            return;
         }
 
-        public object Visit(ConstantDefinition that)
+        public void Visit(ConstantDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
-            return null;
+            return;
         }
 
-        public object Visit(DoStatement that)
+        public void Visit(DoStatement that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(File that)
+        public void Visit(File that)
         {
             if (that.Modules.Length == 0)
                 throw new Error(that.Position, 0, "No modules found in file");
 
             Visit(that.Modules);
 
-            return null;
+            return;
         }
 
-        public object Visit(ForallStatement that)
+        public void Visit(ForallStatement that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(Guard that)
+        public void Visit(Guard that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IdentifierExpression that)
+        public void Visit(IdentifierExpression that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IdentifierReference that)
+        public void Visit(IdentifierReference that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IdentifierType that)
+        public void Visit(IdentifierType that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IfStatement that)
+        public void Visit(IfStatement that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IntegerDefinition that)
+        public void Visit(IntegerDefinition that)
         {
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
-            return null;
+            return;
         }
 
-        public object Visit(IntegerLiteral that)
+        public void Visit(IntegerLiteral that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(IntegerType that)
+        public void Visit(IntegerType that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(LetStatement that)
+        public void Visit(LetStatement that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(Module that)
+        public void Visit(Module that)
         {
             _symbols.EnterModule(that);
 
@@ -212,10 +212,10 @@ namespace Bacchi.Passes
                 that.Block.Visit(this);
 
             _symbols.LeaveModule(that);
-            return null;
+            return;
         }
 
-        public object Visit(ModuleIndexExpression that)
+        public void Visit(ModuleIndexExpression that)
         {
             // Check that the module name is in fact a module name.
             if (that.Prefix.Kind != NodeKind.IdentifierExpression)
@@ -233,38 +233,38 @@ namespace Bacchi.Passes
             if (definition == null)
                 throw new Error(that.Position, 0, "Symbol '" + that.Field + "' not found in module '" + module + "'");
 
-            return null;
+            return;
         }
 
-        public object Visit(Parameter that)
+        public void Visit(Parameter that)
         {
             _symbols.Insert(that, ScopeKind.Local);
-            return null;
+            return;
         }
 
-        public object Visit(ParenthesisExpression that)
+        public void Visit(ParenthesisExpression that)
         {
             /** \note There are no relevant nodes below this node. */
-            return null;
+            return;
         }
 
-        public object Visit(ProcedureCompletion that)
+        public void Visit(ProcedureCompletion that)
         {
             Node definition = _symbols.Lookup(that.Name);
             if (definition == null)
                 throw new Error(that.Position, 0, "Cannot complete undeclared procedure '" + that.Name + "'");
-            return null;
+            return;
         }
 
-        public object Visit(ProcedureDeclaration that)
+        public void Visit(ProcedureDeclaration that)
         {
             /** Create a procedure definition entry for the specified procedure, with its block part set to \c null. */
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
-            return null;
+            return;
         }
 
-        public object Visit(ProcedureDefinition that)
+        public void Visit(ProcedureDefinition that)
         {
             Node definition = _symbols.Lookup(that.Name);
             if (definition != null)
@@ -273,21 +273,19 @@ namespace Bacchi.Passes
             ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
             _symbols.Insert(that, scope);
 
-            return null;
+            return;
         }
 
-        public object Visit(Program that)
+        public void Visit(Program that)
         {
             if (that.Files.Length == 0)
                 throw new Error(that.Position, 0, "No source files found");
 
             foreach (File file in that.Files)
                 file.Visit(this);
-
-            return that;
         }
 
-        public object Visit(RangeType that)
+        public void Visit(RangeType that)
         {
             // Check that the lower bound is a boolean or integer constant.
             if (!that.Lower.IsConstant || (that.Lower.BaseType != TypeKind.Boolean && that.Lower.BaseType != TypeKind.Integer))
@@ -310,10 +308,10 @@ namespace Bacchi.Passes
             Visit(that.Lower);
             Visit(that.Upper);
 
-            return null;
+            return;
         }
 
-        public object Visit(ReadStatement that)
+        public void Visit(ReadStatement that)
         {
 #if false
             // Check that the references are all of integer type.
@@ -327,28 +325,28 @@ namespace Bacchi.Passes
             // Visit children.
             Visit(that.References);
 
-            return null;
+            return;
         }
 
-        public object Visit(ReturnStatement that)
+        public void Visit(ReturnStatement that)
         {
             /** \note There are no relevant checks on this node. */
-            return null;
+            return;
         }
 
-        public object Visit(SkipStatement that)
+        public void Visit(SkipStatement that)
         {
             /** \note There are no relevant checks on this node. */
-            return null;
+            return;
         }
 
-        public object Visit(StringLiteral that)
+        public void Visit(StringLiteral that)
         {
             /** \note There are no relevant checks on this node. */
-            return null;
+            return;
         }
 
-        public object Visit(TupleDefinition that)
+        public void Visit(TupleDefinition that)
         {
             // Check that the tuple's fields are boolean or integer as they cannot be other types.
             foreach (Type type in that.Types)
@@ -360,10 +358,10 @@ namespace Bacchi.Passes
             // Visit children.
             Visit(that.Types);
 
-            return null;
+            return;
         }
 
-        public object Visit(TupleExpression that)
+        public void Visit(TupleExpression that)
         {
             // Check that the tuple's expressions are either boolean or integer as they cannot be other types.
             foreach (Expression expression in that.Expressions)
@@ -375,10 +373,10 @@ namespace Bacchi.Passes
             // Visit children.
             Visit(that.Expressions);
 
-            return null;
+            return;
         }
 
-        public object Visit(TupleIndexExpression that)
+        public void Visit(TupleIndexExpression that)
         {
             // Check that the indexed expression is indeed a tuple expression.
             if (that.Prefix.Kind != NodeKind.IdentifierExpression)
@@ -401,28 +399,28 @@ namespace Bacchi.Passes
             // Visit children.
             Visit(that.Prefix);
 
-            return null;
+            return;
         }
 
-        public object Visit(TupleType that)
+        public void Visit(TupleType that)
         {
             // Visit children.
             Visit(that.Types);
 
-            return null;
+            return;
         }
 
-        public object Visit(TypeDefinition that)
+        public void Visit(TypeDefinition that)
         {
             /** \todo (Low) Check if a similar type definition exists already elsewhere and warn the user if so. */
 
             // Visit children.
             Visit(that.Type);
 
-            return null;
+            return;
         }
 
-        public object Visit(UnaryExpression that)
+        public void Visit(UnaryExpression that)
         {
             // Check that the expression is either boolean or integer.
             switch (that.Expression.BaseType)
@@ -438,10 +436,10 @@ namespace Bacchi.Passes
             // Visit children.
             Visit(that.Expression);
 
-            return null;
+            return;
         }
 
-        public object Visit(VariableDefinition that)
+        public void Visit(VariableDefinition that)
         {
             // Check that the type name is indeed a typedefed name.
             Definition definition = that.World.Symbols.Lookup(that.Type);
@@ -452,10 +450,10 @@ namespace Bacchi.Passes
 
             // No children to visit.
 
-            return null;
+            return;
         }
 
-        public object Visit(WriteStatement that)
+        public void Visit(WriteStatement that)
         {
             // Check that the arguments to 'write' are all booleans, integers, or strings.
             foreach (Expression expression in that.Expressions)
@@ -475,7 +473,7 @@ namespace Bacchi.Passes
             // Visit children.
             Visit(that.Expressions);
 
-            return null;
+            return;
         }
     }
 }

@@ -204,9 +204,9 @@ namespace Bacchi.Syntax
 
         /** \note Parsing is done in \c Expression.Parse(). */
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }

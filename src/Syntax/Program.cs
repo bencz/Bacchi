@@ -79,9 +79,9 @@ namespace Bacchi.Syntax
             return new Program(files.ToArray());
         }
 
-        public override object Visit(Visitor that)
+        public override void Visit(Visitor that)
         {
-            return that.Visit(this);
+            that.Visit(this);
         }
     }
 }
