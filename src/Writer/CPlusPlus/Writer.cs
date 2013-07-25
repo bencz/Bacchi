@@ -27,7 +27,7 @@
  *      2. For each public symbol, create a corresponding public member.
  *      3. For each private symbol, create a corresponding private member.
  *      4. For each module code block, create a corresponding default constructor.
- *      5. For each tuple, a global structure definition is made and then reused.
+ *      5. For each tuple, a global structure definition is made and then reused whenever another tuple matches its layout.
  *
  *  I initially tried to write a C code generator, but found that it made things too complicated for my taste.
  */
@@ -262,6 +262,7 @@ namespace Bacchi.Writer.CPlusPlus
 
         public object Visit(IdentifierType that)
         {
+            _writer.Write(that.Name);
             return null;
         }
 
