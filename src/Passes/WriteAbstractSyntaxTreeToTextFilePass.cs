@@ -26,25 +26,19 @@ using System.Collections.Generic;       // Stack<T>
 
 using Bacchi.Syntax;
 
-namespace Bacchi.Writer.Dumper
+namespace Bacchi.Passes
 {
-    /** Dumper used to dump the Abstract Syntax Tree (AST) to a file. */
-    public class Writer: Visitor
+    /** Dumper used to dump the Abstract Syntax Tree (AST) to a text file. */
+    public class WriteAbstractSyntaxTreeToTextFilePass: Visitor
     {
         private System.IO.StreamWriter _writer;
         private Stack<bool> _commas = new Stack<bool>();
         private bool        _comma = false;
 
-        public Writer(string filename)
+        public WriteAbstractSyntaxTreeToTextFilePass(string filename)
         {
             _writer = System.IO.File.CreateText(filename);
             _writer.WriteLine("THIS (OVER) FIELDS");
-        }
-
-        public void Close()
-        {
-            _writer.Close();
-            _writer = null;
         }
 
         private void Enter(Node that)
@@ -400,11 +394,19 @@ namespace Bacchi.Writer.Dumper
 
         public void Visit(Program that)
         {
-            Enter(that);
-            Print("Files", that.Files);
-            Leave(that);
+            try
+            {
+                Enter(that);
+                Print("Files", that.Files);
+                Leave(that);
 
-            Visit(that.Files);
+                Visit(that.Files);
+            }
+            finally
+            {
+                _writer.Close();
+                _writer = null;
+            }
         }
 
         public void Visit(RangeType that)

@@ -37,24 +37,27 @@ namespace Bacchi.Syntax
         private Dictionary<string, NameToSymbolMap> _modules = new Dictionary<string, NameToSymbolMap>();
         private NameToSymbolMap                     _current;       // The current module.
 
-        public void Dump(System.IO.TextWriter writer)
+        public void Dump(string filename)
         {
-            writer.WriteLine("Symbol table dump:");
-            writer.WriteLine();
-
-            foreach (string module in _modules.Keys)
+            using (var writer = System.IO.File.CreateText("program.sym"))
             {
-                writer.WriteLine("Module {0}:", module);
-                foreach (string name in _modules[module].Keys)
-                {
-                    // Don't dump the internal-use-only module symbol.
-                    if (name.Length == 0)
-                        continue;
-
-                    Symbol symbol = _modules[module][name];
-                    writer.WriteLine("    {0} {1} @{2}", symbol.Scope.ToString().ToLowerInvariant(), name, symbol.Definition.Id);
-                }
+                writer.WriteLine("Symbol table dump:");
                 writer.WriteLine();
+
+                foreach (string module in _modules.Keys)
+                {
+                    writer.WriteLine("Module {0}:", module);
+                    foreach (string name in _modules[module].Keys)
+                    {
+                        // Don't dump the internal-use-only module symbol.
+                        if (name.Length == 0)
+                            continue;
+
+                        Symbol symbol = _modules[module][name];
+                        writer.WriteLine("    {0} {1} @{2}", symbol.Scope.ToString().ToLowerInvariant(), name, symbol.Definition.Id);
+                    }
+                    writer.WriteLine();
+                }
             }
         }
 

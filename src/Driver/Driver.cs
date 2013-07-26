@@ -40,24 +40,27 @@ namespace Bacchi.Driver
                 // Parse the input files into a single, coherent Abstract Syntax Tree (AST).
                 Program program = Program.Parse(arguments);
 
+                // Create list of passes to go through.
+                List<Visitor> passes = new List<Visitor>();
+
 #if TEST
                 // Dump AST to 'program.ast' file.
-                var dumper = new Bacchi.Writer.Dumper.Writer("program.ast");
-                try
-                {
-                    dumper.Visit(program);
-                }
-                finally
-                {
-                    dumper.Close();
-                }
+                passes.Add(new WriteAbstractSyntaxTreeToTextFilePass("program.ast"));
 #endif
-                // Fill out the inherited and synthetic attributes in the AST.
-                Visitor[] passes = new Visitor[]
-                {
-                    new PopulateSymbolTablePass(),
-                    new CheckStaticTypesPass()
-                };
+
+                // Populate the global symbol table.
+                passes.Add(new PopulateSymbolTablePass());
+
+                // Enforce the static type rules of the language while creating and propagating attributes in the tree.
+                passes.Add(new CheckStaticTypesPass());
+
+                // Create a global struct for each anonymous tuple in the source program.
+                // passes.Add(new ConvertTuplesToStructsPass());
+
+                // Generate the C++ output.
+                passes.Add(new Bacchi.Writer.CPlusPlus.Writer("program"));
+
+                // Perform the multi-pass compilation.
                 foreach (Visitor pass in passes)
                 {
                     pass.Visit(program);
@@ -65,20 +68,8 @@ namespace Bacchi.Driver
 
 #if TEST
                 // Dump symbol table to 'program.sym' file.
-                var symbol_dumper = System.IO.File.CreateText("program.sym");
-                program.Symbols.Dump(symbol_dumper);
-                symbol_dumper.Close();
+                program.Symbols.Dump("program.sym");
 #endif
-
-                var writer = new Bacchi.Writer.CPlusPlus.Writer("program");
-                try
-                {
-                    writer.Visit(program);
-                }
-                finally
-                {
-                    writer.Close();
-                }
 
                 result = 0;
             }

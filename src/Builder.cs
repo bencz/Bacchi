@@ -664,7 +664,7 @@ namespace Bacchi.Builder
             try
             {
                 // tell the world who's running the show
-                System.Console.WriteLine("Bacchi.Builder v0.02");
+                System.Console.WriteLine("Bacchi.Builder v0.03");
                 System.Console.WriteLine("Copyright (C) 2013 Mikael Lyngvig.  All rights reserved.");
                 System.Console.WriteLine();
 
@@ -714,15 +714,13 @@ namespace Bacchi.Builder
                 {
                     setup.Output + "Kernel.dll",
                     setup.Output + "Syntax.dll",
-                    setup.Output + "Passes.dll",
-                    setup.Output + "Writer.dll"
+                    setup.Output + "Passes.dll"
                 };
 
                 // Build the various assemblies and executables that make up the compiler.
                 Build("Kernel.dll", "Kernel", new string[0], setup);
                 Build("Syntax.dll", "Syntax", root, setup);
                 Build("Passes.dll", "Passes", core, setup);
-                Build("Writer.dll", "Writer", core, setup);
                 Build("Driver.exe", "Driver", main, setup);
 
                 // If 'ilmerge.exe' or 'ilrepack.exe' is present in the path, generate the single stand-alone ArchSetup.exe.
@@ -747,7 +745,6 @@ namespace Bacchi.Builder
                     files.Add(setup.Output + "Kernel.dll");
                     files.Add(setup.Output + "Passes.dll");
                     files.Add(setup.Output + "Syntax.dll");
-                    files.Add(setup.Output + "Writer.dll");
 
                     if (!System.IO.File.Exists(target) || FileDate(files.ToArray()) > FileDate(target))
                     {
