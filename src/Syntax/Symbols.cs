@@ -37,7 +37,7 @@ namespace Bacchi.Syntax
         private Dictionary<string, NameToSymbolMap> _modules = new Dictionary<string, NameToSymbolMap>();
         private NameToSymbolMap                     _current;       // The current module.
 
-        public void Dump(System.IO.StreamWriter writer)
+        public void Dump(System.IO.TextWriter writer)
         {
             writer.WriteLine("Symbol table dump:");
             writer.WriteLine();

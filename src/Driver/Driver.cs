@@ -55,7 +55,8 @@ namespace Bacchi.Driver
                 // Fill out the inherited and synthetic attributes in the AST.
                 Visitor[] passes = new Visitor[]
                 {
-                    new PopulateSymbolTablePass()
+                    new PopulateSymbolTablePass(),
+                    new CheckStaticTypesPass()
                 };
                 foreach (Visitor pass in passes)
                 {
