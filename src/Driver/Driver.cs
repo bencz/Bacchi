@@ -34,6 +34,19 @@ namespace Bacchi.Driver
     {
         public static int Main(string[] arguments)
         {
+            if (arguments.Length == 0)
+            {
+                System.Console.Write("Bacchi v0.01");
+#if TEST
+                System.Console.Write(" (TEST)");
+#endif
+                System.Console.WriteLine(" - http://github.com/bencz/Bacchi");
+                System.Console.WriteLine("Copyright (c) 2013 Mikael Lyngvig.  All rights reserved.");
+                System.Console.WriteLine();
+                System.Console.WriteLine("Syntax: \"Bacchi.exe\" +filename");
+                return 1;
+            }
+
             int result;
             try
             {
