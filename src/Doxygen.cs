@@ -30,8 +30,13 @@ namespace Bacchi
     {
     }
 
-    /** The \c Kernel contains stuff that's being shared by all components of the compiler. */
+    /** The \c Kernel namespace contains stuff that's being shared by all components of the compiler. */
     namespace Kernel
+    {
+    }
+
+    /** The \c Passes namspace contains the list of all available passes in the compiler. */
+    namespace Passes
     {
     }
 
