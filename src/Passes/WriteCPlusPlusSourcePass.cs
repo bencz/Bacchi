@@ -35,15 +35,15 @@
 using Bacchi.Kernel;                    // Error, Position
 using Bacchi.Syntax;
 
-namespace Bacchi.Writer.CPlusPlus
+namespace Bacchi.Passes
 {
     /** Writer used to write C++ source code to a file. */
-    public class Writer: Visitor
+    public class WriteCPlusPlusSourcePass: Visitor
     {
         private Symbols  _symbols;
         private Indenter _writer;
 
-        public Writer(string basename)
+        public WriteCPlusPlusSourcePass(string basename)
         {
             _writer = new Indenter(basename + ".cpp", System.Text.Encoding.ASCII);
         }

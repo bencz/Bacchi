@@ -58,7 +58,7 @@ namespace Bacchi.Driver
                 // passes.Add(new ConvertTuplesToStructsPass());
 
                 // Generate the C++ output.
-                passes.Add(new Bacchi.Writer.CPlusPlus.Writer("program"));
+                passes.Add(new WriteCPlusPlusSourcePass("program"));
 
                 // Perform the multi-pass compilation.
                 foreach (Visitor pass in passes)
