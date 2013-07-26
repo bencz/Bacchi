@@ -72,8 +72,6 @@ namespace Bacchi.Writer.CPlusPlus
         {
             /** \todo Determine if a value or reference parameter; the latter must sometimes be prefixed by an ampersand (&). */
             Visit(that.Value);
-
-            return;
         }
 
         public void Visit(ArrayExpression that)
@@ -83,8 +81,6 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write('[');
             Visit(that.Index);
             _writer.Write(']');
-
-            return;
         }
 
         public void Visit(ArrayReference that)
@@ -93,13 +89,11 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write('[');
             Visit(that.Expression);
             _writer.Write(']');
-            return;
         }
 
         public void Visit(ArrayType that)
         {
             Visit(that.Base);
-            return;
         }
 
         public void Visit(Assignment that)
@@ -108,7 +102,6 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write(" = ");
             Visit(that.Expression);
             _writer.WriteLine(';');
-            return;
         }
 
         public void Visit(BinaryExpression that)
@@ -135,15 +128,12 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write(value);
             _writer.Write(' ');
             Visit(that.Other);
-            return;
         }
 
         public void Visit(Block that)
         {
             Visit(that.Definitions);
             Visit(that.Statements);
-
-            return;
         }
 
         public void Visit(BooleanDefinition that)
@@ -151,19 +141,16 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write("bool ");
             _writer.Write(that.Name);
             _writer.WriteLine(';');
-            return;
         }
 
         public void Visit(BooleanLiteral that)
         {
             _writer.Write(that.Value ? "true" : "false");
-            return;
         }
 
         public void Visit(BooleanType that)
         {
             _writer.Write("bool");
-            return;
         }
 
         public void Visit(CallStatement that)
@@ -177,7 +164,6 @@ namespace Bacchi.Writer.CPlusPlus
                     _writer.Write(", ");
             }
             _writer.WriteLine(");");
-            return;
         }
 
         public void Visit(ConstantDefinition that)
@@ -193,7 +179,6 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write(" = ");
             Visit(that.Literal);
             _writer.WriteLine(';');
-            return;
         }
 
         public void Visit(DoStatement that)
@@ -221,7 +206,6 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Dedent();
             _writer.Dedent();
             _writer.WriteLine('}');
-            return;
         }
 
         public void Visit(File that)
@@ -234,36 +218,29 @@ namespace Bacchi.Writer.CPlusPlus
 
             _writer.WriteLine("/* SOURCE FILE: {0} */", that.Name);
             Visit(that.Modules);
-
-            return;
         }
 
         public void Visit(ForallStatement that)
         {
-            return;
         }
 
         public void Visit(Guard that)
         {
-            return;
         }
 
         public void Visit(IdentifierExpression that)
         {
             _writer.Write(that.Name);
-            return;
         }
 
         public void Visit(IdentifierReference that)
         {
             _writer.Write(that.Name);
-            return;
         }
 
         public void Visit(IdentifierType that)
         {
             _writer.Write(that.Name);
-            return;
         }
 
         public void Visit(IfStatement that)
@@ -284,7 +261,6 @@ namespace Bacchi.Writer.CPlusPlus
                 _writer.Dedent();
                 _writer.WriteLine('}');
             }
-            return;
         }
 
         public void Visit(IntegerDefinition that)
@@ -292,19 +268,16 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write("int ");
             _writer.Write(that.Name);
             _writer.WriteLine(';');
-            return;
         }
 
         public void Visit(IntegerLiteral that)
         {
             _writer.Write(that.Value.ToString());
-            return;
         }
 
         public void Visit(IntegerType that)
         {
             _writer.Write("int");
-            return;
         }
 
         public void Visit(LetStatement that)
@@ -313,7 +286,6 @@ namespace Bacchi.Writer.CPlusPlus
             if (that.Assignments.Length > 1)
                 _writer.WriteLine("/* The next {0} statements are supposed to execute in parallel: */", that.Assignments.Length);
             Visit(that.Assignments);
-            return;
         }
 
         public void Visit(Module that)
@@ -357,8 +329,6 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.WriteLine();
 
             that.World.Symbols.LeaveModule(that);
-
-            return;
         }
 
         public void Visit(ModuleIndexExpression that)
@@ -366,7 +336,6 @@ namespace Bacchi.Writer.CPlusPlus
             Visit(that.Prefix);
             _writer.Write("__");
             _writer.Write(that.Field);
-            return;
         }
 
         public void Visit(Parameter that)
@@ -376,7 +345,6 @@ namespace Bacchi.Writer.CPlusPlus
             if (that.Mode == ModeKind.Reference)
                 _writer.Write('*');
             _writer.Write(that.Name);
-            return;
         }
 
         public void Visit(ParenthesisExpression that)
@@ -384,17 +352,14 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write('(');
             Visit(that.Expression);
             _writer.Write(')');
-            return;
         }
 
         public void Visit(ProcedureCompletion that)
         {
-            return;
         }
 
         public void Visit(ProcedureDeclaration that)
         {
-            return;
         }
 
         public void Visit(ProcedureDefinition that)
@@ -414,8 +379,6 @@ namespace Bacchi.Writer.CPlusPlus
             Visit(that.Block);
             _writer.Dedent();
             _writer.WriteLine('}');
-
-            return;
         }
 
         public void Visit(Program that)
@@ -451,14 +414,11 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.WriteLine('}');
 
             _symbols = null;
-
-            return;
         }
 
         public void Visit(RangeType that)
         {
             Visit(that.Type);
-            return;
         }
 
         public void Visit(ReadStatement that)
@@ -468,19 +428,16 @@ namespace Bacchi.Writer.CPlusPlus
                 Visit(reference);
                 _writer.WriteLine(" = __gcl_integer_parse();");
             }
-            return;
         }
 
         public void Visit(ReturnStatement that)
         {
             _writer.WriteLine("return;");
-            return;
         }
 
         public void Visit(SkipStatement that)
         {
             _writer.WriteLine("(void) 0;");
-            return;
         }
 
         public void Visit(StringLiteral that)
@@ -488,7 +445,6 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write('"');
             _writer.Write(that.Value);
             _writer.Write('"');
-            return;
         }
 
         public void Visit(TupleDefinition that)
@@ -505,7 +461,6 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write(" } ");
             _writer.Write(that.Name);
             _writer.WriteLine(';');
-            return;
         }
 
         public void Visit(TupleExpression that)
@@ -519,7 +474,6 @@ namespace Bacchi.Writer.CPlusPlus
                     _writer.Write(", ");
             }
             _writer.Write(" }");
-            return;
         }
 
         public void Visit(TupleIndexExpression that)
@@ -527,7 +481,6 @@ namespace Bacchi.Writer.CPlusPlus
             Visit(that.Prefix);
             _writer.Write("._");
             _writer.Write(that.Index.ToString());
-            return;
         }
 
         public void Visit(TupleType that)
@@ -542,8 +495,6 @@ namespace Bacchi.Writer.CPlusPlus
                 _writer.Write("; ");
             }
             _writer.Write(" }");
-
-            return;
         }
 
         public void Visit(TypeDefinition that)
@@ -575,7 +526,6 @@ namespace Bacchi.Writer.CPlusPlus
             }
 
             _writer.WriteLine(';');
-            return;
         }
 
         public void Visit(UnaryExpression that)
@@ -610,8 +560,6 @@ namespace Bacchi.Writer.CPlusPlus
                     throw new System.ArgumentException("that.Operator");
             }
             Visit(that.Expression);
-
-            return;
         }
 
         public void Visit(VariableDefinition that)
@@ -621,7 +569,6 @@ namespace Bacchi.Writer.CPlusPlus
             _writer.Write(' ');
             _writer.Write(that.Name);
             _writer.WriteLine(';');
-            return;
         }
 
         public void Visit(WriteStatement that)
@@ -648,8 +595,6 @@ namespace Bacchi.Writer.CPlusPlus
                 expression.Visit(this);
                 _writer.WriteLine(");");
             }
-
-            return;
         }
     }
 }

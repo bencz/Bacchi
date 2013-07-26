@@ -120,8 +120,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Value);
-
-            return;
         }
 
         public void Visit(ArrayExpression that)
@@ -133,8 +131,6 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.Array);
             Visit(that.Index);
-
-            return;
         }
 
         public void Visit(ArrayReference that)
@@ -146,8 +142,6 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.Reference);
             Visit(that.Expression);
-
-            return;
         }
 
         public void Visit(ArrayType that)
@@ -158,8 +152,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Base);
-
-            return;
         }
 
         public void Visit(Assignment that)
@@ -171,8 +163,6 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.Reference);
             Visit(that.Expression);
-
-            return;
         }
 
         public void Visit(BinaryExpression that)
@@ -185,8 +175,6 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.First);
             Visit(that.Other);
-
-            return;
         }
 
         public void Visit(Block that)
@@ -198,8 +186,6 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.Definitions);
             Visit(that.Statements);
-
-            return;
         }
 
         public void Visit(BooleanDefinition that)
@@ -207,8 +193,6 @@ namespace Bacchi.Writer.Dumper
             Enter(that);
             Print("Name", that.Name);
             Leave(that);
-
-            return;
         }
 
         public void Visit(BooleanLiteral that)
@@ -216,16 +200,12 @@ namespace Bacchi.Writer.Dumper
             Enter(that);
             Print("Value", that.Value ? "true" : "false");
             Leave(that);
-
-            return;
         }
 
         public void Visit(BooleanType that)
         {
             Enter(that);
             Leave(that);
-
-            return;
         }
 
         public void Visit(CallStatement that)
@@ -236,8 +216,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Arguments);
-
-            return;
         }
 
         public void Visit(ConstantDefinition that)
@@ -248,8 +226,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Literal);
-
-            return;
         }
 
         public void Visit(DoStatement that)
@@ -259,8 +235,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Guards);
-
-            return;
         }
 
         public void Visit(File that)
@@ -271,8 +245,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Modules);
-
-            return;
         }
 
         public void Visit(ForallStatement that)
@@ -283,8 +255,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Statements);
-
-            return;
         }
 
         public void Visit(Guard that)
@@ -296,8 +266,6 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.Expression);
             Visit(that.Statements);
-
-            return;
         }
 
         public void Visit(IdentifierExpression that)
@@ -305,8 +273,6 @@ namespace Bacchi.Writer.Dumper
             Enter(that);
             Print("Name", that.Name);
             Leave(that);
-
-            return;
         }
 
         public void Visit(IdentifierReference that)
@@ -314,8 +280,6 @@ namespace Bacchi.Writer.Dumper
             Enter(that);
             Print("Name", that.Name);
             Leave(that);
-
-            return;
         }
 
         public void Visit(IdentifierType that)
@@ -323,8 +287,6 @@ namespace Bacchi.Writer.Dumper
             Enter(that);
             Print("Name", that.Name);
             Leave(that);
-
-            return;
         }
 
         public void Visit(IfStatement that)
@@ -334,8 +296,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Guards);
-
-            return;
         }
 
         public void Visit(IntegerDefinition that)
@@ -343,8 +303,6 @@ namespace Bacchi.Writer.Dumper
             Enter(that);
             Print("Name", that.Name);
             Leave(that);
-
-            return;
         }
 
         public void Visit(IntegerLiteral that)
@@ -352,16 +310,12 @@ namespace Bacchi.Writer.Dumper
             Enter(that);
             Print("Value", that.Value.ToString());
             Leave(that);
-
-            return;
         }
 
         public void Visit(IntegerType that)
         {
             Enter(that);
             Leave(that);
-
-            return;
         }
 
         public void Visit(LetStatement that)
@@ -371,8 +325,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Assignments);
-
-            return;
         }
 
         public void Visit(Module that)
@@ -384,8 +336,6 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.Definitions);
             Visit(that.Block);
-
-            return;
         }
 
         public void Visit(ModuleIndexExpression that)
@@ -396,8 +346,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Prefix);
-
-            return;
         }
 
         public void Visit(Parameter that)
@@ -409,8 +357,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Type);
-
-            return;
         }
 
         public void Visit(ParenthesisExpression that)
@@ -420,8 +366,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Expression);
-
-            return;
         }
 
         public void Visit(ProcedureCompletion that)
@@ -430,8 +374,6 @@ namespace Bacchi.Writer.Dumper
             Print("Name", that.Name);
             Print("Block", that.Block);
             Leave(that);
-
-            return;
         }
 
         public void Visit(ProcedureDeclaration that)
@@ -442,8 +384,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Parameters);
-
-            return;
         }
 
         public void Visit(ProcedureDefinition that)
@@ -456,8 +396,6 @@ namespace Bacchi.Writer.Dumper
 
             Visit(that.Parameters);
             Visit(that.Block);
-
-            return;
         }
 
         public void Visit(Program that)
@@ -467,8 +405,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Files);
-
-            return;
         }
 
         public void Visit(RangeType that)
@@ -482,8 +418,6 @@ namespace Bacchi.Writer.Dumper
             Visit(that.Type);
             Visit(that.Lower);
             Visit(that.Upper);
-
-            return;
         }
 
         public void Visit(ReadStatement that)
@@ -493,24 +427,18 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.References);
-
-            return;
         }
 
         public void Visit(ReturnStatement that)
         {
             Enter(that);
             Leave(that);
-
-            return;
         }
 
         public void Visit(SkipStatement that)
         {
             Enter(that);
             Leave(that);
-
-            return;
         }
 
         public void Visit(StringLiteral that)
@@ -518,8 +446,6 @@ namespace Bacchi.Writer.Dumper
             Enter(that);
             Print("Value", that.Value, true);
             Leave(that);
-
-            return;
         }
 
         public void Visit(TupleDefinition that)
@@ -529,8 +455,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Types);
-
-            return;
         }
 
         public void Visit(TupleExpression that)
@@ -540,8 +464,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Expressions);
-
-            return;
         }
 
         public void Visit(TupleIndexExpression that)
@@ -552,8 +474,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Prefix);
-
-            return;
         }
 
         public void Visit(TupleType that)
@@ -563,8 +483,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Types);
-
-            return;
         }
 
         public void Visit(TypeDefinition that)
@@ -575,8 +493,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Type);
-
-            return;
         }
 
         public void Visit(UnaryExpression that)
@@ -587,8 +503,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Expression);
-
-            return;
         }
 
         public void Visit(VariableDefinition that)
@@ -597,8 +511,6 @@ namespace Bacchi.Writer.Dumper
             Print("Name", that.Name);
             Print("Type", that.Type);
             Leave(that);
-
-            return;
         }
 
         public void Visit(WriteStatement that)
@@ -608,8 +520,6 @@ namespace Bacchi.Writer.Dumper
             Leave(that);
 
             Visit(that.Expressions);
-
-            return;
         }
     }
 }
