@@ -45,32 +45,32 @@ namespace Bacchi.Passes
 
         public void Visit(Argument that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ArrayExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ArrayReference that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ArrayType that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(Assignment that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(BinaryExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(Block that)
@@ -88,17 +88,17 @@ namespace Bacchi.Passes
 
         public void Visit(BooleanLiteral that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(BooleanType that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(CallStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ConstantDefinition that)
@@ -109,7 +109,7 @@ namespace Bacchi.Passes
 
         public void Visit(DoStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(File that)
@@ -119,32 +119,32 @@ namespace Bacchi.Passes
 
         public void Visit(ForallStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(Guard that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(IdentifierExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(IdentifierReference that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(IdentifierType that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(IfStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(IntegerDefinition that)
@@ -155,17 +155,17 @@ namespace Bacchi.Passes
 
         public void Visit(IntegerLiteral that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(IntegerType that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(LetStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(Module that)
@@ -181,7 +181,7 @@ namespace Bacchi.Passes
 
         public void Visit(ModuleIndexExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(Parameter that)
@@ -191,7 +191,7 @@ namespace Bacchi.Passes
 
         public void Visit(ParenthesisExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ProcedureCompletion that)
@@ -232,27 +232,27 @@ namespace Bacchi.Passes
 
         public void Visit(RangeType that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ReadStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ReturnStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(SkipStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(StringLiteral that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(TupleDefinition that)
@@ -263,17 +263,17 @@ namespace Bacchi.Passes
 
         public void Visit(TupleExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(TupleIndexExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(TupleType that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(TypeDefinition that)
@@ -284,7 +284,7 @@ namespace Bacchi.Passes
 
         public void Visit(UnaryExpression that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(VariableDefinition that)
@@ -295,7 +295,7 @@ namespace Bacchi.Passes
 
         public void Visit(WriteStatement that)
         {
-            /** \note There are no relavant nodes below this node. */
+            /** \note There are no relevant nodes below this node. */
         }
     }
 }
