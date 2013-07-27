@@ -56,11 +56,6 @@ namespace Bacchi.Driver
                 // Create list of passes to go through.
                 List<Visitor> passes = new List<Visitor>();
 
-#if TEST
-                // Dump AST to 'program.ast' file.
-                passes.Add(new WriteAbstractSyntaxTreeToTextFilePass("program.ast"));
-#endif
-
                 // Populate the global symbol table.
                 passes.Add(new PopulateSymbolTablePass());
 
@@ -72,6 +67,11 @@ namespace Bacchi.Driver
 
                 // Generate the C++ output.
                 passes.Add(new WriteCPlusPlusSourcePass("program"));
+
+#if TEST
+                // Dump AST to 'program.ast' file.
+                passes.Add(new WriteAbstractSyntaxTreeToTextFilePass("program.ast"));
+#endif
 
                 // Perform the multi-pass compilation.
                 foreach (Visitor pass in passes)
