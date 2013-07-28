@@ -44,12 +44,27 @@ namespace Bacchi.Syntax
             }
         }
 
-        /** Attributes originating with the source code. */
+#region Literal attributes
         private File[] _files;
         public File[] Files
         {
             get { return _files; }
         }
+#endregion
+
+#region Synthetic attributes
+        private TupleType[] _tuples;
+        public TupleType[] Tuples
+        {
+            get { return _tuples; }
+            set
+            {
+                if (_tuples != null)
+                    throw new System.ArgumentException("_tuples");
+                _tuples = value;
+            }
+        }
+#endregion
 
         public Program(File[] files):
             base(NodeKind.Program, new Position())

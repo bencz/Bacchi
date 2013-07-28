@@ -53,14 +53,14 @@ namespace Bacchi.Syntax
             _name = name;
         }
 
-        public override bool Equal(Symbols symbols, Type other)
+        public override bool Compare(Type other)
         {
-            Definition definition = symbols.Lookup(this.Position, _name);
+            Definition definition = this.World.Symbols.Lookup(this.Position, _name);
             if (definition.Kind != NodeKind.TypeDefinition)
                 return false;
 
             Type first = ((TypeDefinition) definition).Type;
-            return first.Equal(symbols, other);
+            return first.Compare(other);
         }
 
         public static new IdentifierType Parse(Tokens tokens)

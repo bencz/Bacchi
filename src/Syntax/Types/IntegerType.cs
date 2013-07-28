@@ -43,7 +43,7 @@ namespace Bacchi.Syntax
         {
         }
 
-        public override bool Equal(Symbols symbols, Type other)
+        public override bool Compare(Type other)
         {
             switch (other.Kind)
             {

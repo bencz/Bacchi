@@ -53,7 +53,7 @@ namespace Bacchi.Syntax
             get { return _type.BaseType; }
         }
 
-        public override bool Equal(Symbols symbols, Type other)
+        public override bool Compare(Type other)
         {
             switch (other.Kind)
             {
@@ -64,7 +64,7 @@ namespace Bacchi.Syntax
                     return (_type.Kind == NodeKind.IntegerType);
 
                 case NodeKind.RangeType:
-                    return (_type.Kind == NodeKind.RangeType && _type.Equal(symbols, ((RangeType) _type).Type));
+                    return (_type.Kind == NodeKind.RangeType && _type.Compare(((RangeType) _type).Type));
 
                 default:
                     return false;

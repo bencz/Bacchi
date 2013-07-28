@@ -22,16 +22,18 @@
  *  Defines the \c ConvertTuplesToStructsPass class, which traverses the tree and converts anonymous tuples into structures.
  */
 
+using System.Collections.Generic;       // List<T>
+
 using Bacchi.Kernel;                    // Error
-using Bacchi.Syntax;
+using Bacchi.Syntax;                    // Visitor, nodes
 
 namespace Bacchi.Passes
 {
     /** Converts tuple expressions and tuple definitions into corresponding structure definitions with named members. */
     public class ConvertTuplesToStructsPass: Visitor
     {
-        /** Cache of the global symbol table found in the topmost \c Program node. */
-        private Symbols _symbols;
+        /** A complete list of all distinct tuple types found in the AST. */
+        private List<TupleType> _tuples = new List<TupleType>();
 
         public ConvertTuplesToStructsPass()
         {
@@ -76,7 +78,7 @@ namespace Bacchi.Passes
         public void Visit(Block that)
         {
             Visit(that.Definitions);
-            /** \note There are no relevant nodes below this node. */
+            /** \note \c that.Statements cannot define any tuples. */
         }
 
         public void Visit(BooleanDefinition that)
@@ -101,8 +103,7 @@ namespace Bacchi.Passes
 
         public void Visit(ConstantDefinition that)
         {
-            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
-            _symbols.Insert(that, scope);
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(DoStatement that)
@@ -147,8 +148,7 @@ namespace Bacchi.Passes
 
         public void Visit(IntegerDefinition that)
         {
-            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
-            _symbols.Insert(that, scope);
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(IntegerLiteral that)
@@ -168,13 +168,9 @@ namespace Bacchi.Passes
 
         public void Visit(Module that)
         {
-            _symbols.EnterModule(that);
-
             Visit(that.Definitions);
             if (that.Block != null)
                 that.Block.Visit(this);
-
-            _symbols.LeaveModule(that);
         }
 
         public void Visit(ModuleIndexExpression that)
@@ -184,7 +180,17 @@ namespace Bacchi.Passes
 
         public void Visit(Parameter that)
         {
-            _symbols.Insert(that, ScopeKind.Local);
+            if (that.Type.Kind == NodeKind.TupleType)
+            {
+                // Create a replacement struct type.
+                foreach (TupleType type in _tuples)
+                {
+                    if (that.Type.Compare(type))
+                        return;
+                }
+
+                _tuples.Add((TupleType) that.Type);
+            }
         }
 
         public void Visit(ParenthesisExpression that)
@@ -194,38 +200,24 @@ namespace Bacchi.Passes
 
         public void Visit(ProcedureCompletion that)
         {
-            Node definition = _symbols.Lookup(that.Name);
-            if (definition == null)
-                throw new Error(that.Position, 0, "Cannot complete undeclared procedure '" + that.Name + "'");
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ProcedureDeclaration that)
         {
-            /** Create a procedure definition entry for the specified procedure, with its block part set to \c null. */
-            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
-            _symbols.Insert(that, scope);
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ProcedureDefinition that)
         {
-            Node definition = _symbols.Lookup(that.Name);
-            if (definition != null)
-                throw new Error(that.Position, 0, "Cannot redefine procedure");
-
-            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
-            _symbols.Insert(that, scope);
+            Visit(that.Parameters);
         }
 
         public void Visit(Program that)
         {
-            // Cache the global symbol table locally.
-            _symbols = that.Symbols;
+            Visit(that.Files);
 
-            foreach (File file in that.Files)
-                file.Visit(this);
-
-            // Release the cached symbol table.
-            _symbols = null;
+            that.Tuples = _tuples.ToArray();
         }
 
         public void Visit(RangeType that)
@@ -255,8 +247,7 @@ namespace Bacchi.Passes
 
         public void Visit(TupleDefinition that)
         {
-            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
-            _symbols.Insert(that, scope);
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(TupleExpression that)
@@ -271,13 +262,21 @@ namespace Bacchi.Passes
 
         public void Visit(TupleType that)
         {
-            /** \note There are no relevant nodes below this node. */
+            /** \note I use a slow linear search (instead of mangling and storing in a dictionary) for the sake of simplicity. */
+            // See if this tuple layout has already been defined.
+            foreach (TupleType type in _tuples)
+            {
+                if (that.Compare(type))
+                    return;
+            }
+
+            // Add this tuple layout to the list of known tuple layouts.
+            _tuples.Add(that);
         }
 
         public void Visit(TypeDefinition that)
         {
-            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
-            _symbols.Insert(that, scope);
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(UnaryExpression that)
@@ -287,8 +286,7 @@ namespace Bacchi.Passes
 
         public void Visit(VariableDefinition that)
         {
-            ScopeKind scope = (that.Above is Module) ? ScopeKind.Global : ScopeKind.Local;
-            _symbols.Insert(that, scope);
+            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(WriteStatement that)

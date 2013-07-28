@@ -44,6 +44,21 @@ namespace Bacchi.Syntax
         {
             get { return TypeKind.Tuple; }
         }
+
+        private TupleType _master;
+        /** Filled in by the \c ConvertTuplesToStructuresPass compiler pass. Points to the structure definition. */
+        public TupleType Master
+        {
+            get { return _master; }
+            set
+            {
+                if (value == null)
+                    throw new System.ArgumentException("value");
+                if (_master != null)
+                    throw new System.ArgumentException("_master");
+                _master = value;
+            }
+        }
 #endregion
 
         /** Constructor for the \c TupleType class. */
@@ -55,7 +70,7 @@ namespace Bacchi.Syntax
                 type.Above = this;
         }
 
-        public override bool Equal(Symbols symbols, Type other)
+        public override bool Compare(Type other)
         {
             if (other.Kind != NodeKind.TupleType)
                 return false;
@@ -66,7 +81,7 @@ namespace Bacchi.Syntax
 
             for (int i = 0; i < _types.Length; i++)
             {
-                if (!_types[i].Equal(symbols, other_tuple.Types[i]))
+                if (!_types[i].Compare(other_tuple.Types[i]))
                     return false;
             }
 

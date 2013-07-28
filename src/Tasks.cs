@@ -1,6 +1,7 @@
 /** \file
  *  Main task list (to-do list).
  *
+ *  \todo Fix the problem that partial procedures are not handled at all.
  *  \todo Fix the problem that parameter names are \b not entered into the symbol table.
  *  \todo Generate a single, global structure definition for each tuple layout encountered (requires a separate pass).
  *  \todo Take the address of \c ref arguments when passing them into the called procedure.

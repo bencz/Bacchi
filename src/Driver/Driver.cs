@@ -63,7 +63,7 @@ namespace Bacchi.Driver
                 passes.Add(new CheckStaticTypesPass());
 
                 // Create a global struct for each anonymous tuple in the source program.
-                // passes.Add(new ConvertTuplesToStructsPass());
+                passes.Add(new ConvertTuplesToStructsPass());
 
                 // Generate the C++ output.
                 passes.Add(new WriteCPlusPlusSourcePass("program"));

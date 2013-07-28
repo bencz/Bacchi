@@ -38,7 +38,7 @@ namespace Bacchi.Syntax
         {
         }
 
-        public abstract bool Equal(Symbols symbols, Type other);
+        public abstract bool Compare(Type other);
 
         public static Type Parse(Tokens tokens)
         {

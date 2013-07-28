@@ -56,13 +56,13 @@ namespace Bacchi.Syntax
             _name = name;
         }
 
-        public override bool Equal(Symbols symbols, Type other)
+        public override bool Compare(Type other)
         {
             if (other.Kind != NodeKind.ArrayType)
                 return false;
 
             ArrayType other_type = (ArrayType) other;
-            return _base.Equal(symbols, other_type.Base);
+            return _base.Compare(other_type.Base);
         }
 
         /** Parsing is handled by \c Type.Parse(). */
