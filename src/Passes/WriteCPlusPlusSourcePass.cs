@@ -30,6 +30,8 @@
  *      5. For each tuple, a global structure definition is made and then reused whenever another tuple matches its layout.
  *
  *  I initially tried to write a C code generator, but found that it made things too complicated for my taste.
+ *
+ *  \note This pass assumes that the Checker pass has already been run.
  */
 
 using Bacchi.Kernel;                    // Error, Position
