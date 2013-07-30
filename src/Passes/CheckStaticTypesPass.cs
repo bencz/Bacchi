@@ -57,11 +57,6 @@ namespace Bacchi.Passes
             /** \todo Check that the array index type matches the base type of array expression. */
         }
 
-        public void Visit(ArrayReference that)
-        {
-            /** \note Check that the index expression is of the same type as the array's base type. */
-        }
-
         public void Visit(ArrayType that)
         {
             /** \todo Check that the array's base type is either Boolean or integer. */
@@ -132,11 +127,6 @@ namespace Bacchi.Passes
         }
 
         public void Visit(IdentifierExpression that)
-        {
-            /** \note There are no relevant nodes below this node. */
-        }
-
-        public void Visit(IdentifierReference that)
         {
             /** \note There are no relevant nodes below this node. */
         }
@@ -264,7 +254,7 @@ namespace Bacchi.Passes
         public void Visit(ReadStatement that)
         {
 #if false
-            // Check that the references are all of integer type.
+            // Check that the variables are all of integer type (they may be array members, though).
             foreach (Reference reference in that.References)
             {
                 if (reference.BaseType != TypeKind.Integer)
@@ -273,7 +263,7 @@ namespace Bacchi.Passes
 #endif
 
             // Visit children.
-            Visit(that.References);
+            Visit(that.Variables);
         }
 
         public void Visit(ReturnStatement that)

@@ -127,17 +127,6 @@ namespace Bacchi.Passes
             Visit(that.Index);
         }
 
-        public void Visit(ArrayReference that)
-        {
-            Enter(that);
-            Print("Reference", that.Reference);
-            Print("Expression", that.Expression);
-            Leave(that);
-
-            Visit(that.Reference);
-            Visit(that.Expression);
-        }
-
         public void Visit(ArrayType that)
         {
             Enter(that);
@@ -151,11 +140,11 @@ namespace Bacchi.Passes
         public void Visit(Assignment that)
         {
             Enter(that);
-            Print("Reference", that.Reference);
+            Print("Variable", that.Variable);
             Print("Expression", that.Expression);
             Leave(that);
 
-            Visit(that.Reference);
+            Visit(that.Variable);
             Visit(that.Expression);
         }
 
@@ -263,13 +252,6 @@ namespace Bacchi.Passes
         }
 
         public void Visit(IdentifierExpression that)
-        {
-            Enter(that);
-            Print("Name", that.Name);
-            Leave(that);
-        }
-
-        public void Visit(IdentifierReference that)
         {
             Enter(that);
             Print("Name", that.Name);
@@ -425,10 +407,10 @@ namespace Bacchi.Passes
         public void Visit(ReadStatement that)
         {
             Enter(that);
-            Print("References", that.References);
+            Print("Variables", that.Variables);
             Leave(that);
 
-            Visit(that.References);
+            Visit(that.Variables);
         }
 
         public void Visit(ReturnStatement that)

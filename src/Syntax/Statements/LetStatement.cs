@@ -50,20 +50,20 @@ namespace Bacchi.Syntax
         {
             Token start = tokens.Peek;
 
-            var references = Reference.ParseList(tokens, TokenKind.Symbol_Assignment);
+            var variables = Expression.ParseList(tokens, TokenKind.Symbol_Assignment);
             tokens.Match(TokenKind.Symbol_Assignment);
             var expressions = Expression.ParseList(tokens, TokenKind.Symbol_Semicolon);
             tokens.Match(TokenKind.Symbol_Semicolon);
 
-            if (expressions.Length < references.Length)
+            if (expressions.Length < variables.Length)
                 throw new Error(start.Position, 0, "Too few expressions given for assignment");
-            if (expressions.Length > references.Length)
+            if (expressions.Length > variables.Length)
                 throw new Error(start.Position, 0, "Too many expressions given for assignment");
 
-            /** Merge the two separate lists of references and expressions into an array of \c Assignments. */
-            var assignments = new Assignment[references.Length];
-            for (int i = 0; i < references.Length; i++)
-                assignments[i] = new Assignment(references[i].Position, references[i], expressions[i]);
+            /** Merge the two separate lists of variables and expressions into an array of \c Assignments. */
+            var assignments = new Assignment[variables.Length];
+            for (int i = 0; i < variables.Length; i++)
+                assignments[i] = new Assignment(variables[i].Position, variables[i], expressions[i]);
 
             return new LetStatement(start.Position, assignments);
         }

@@ -28,18 +28,18 @@ namespace Bacchi.Syntax
 {
     public class ReadStatement: Statement
     {
-        private Reference[] _references;
-        public Reference[] References
+        private Expression[] _variables;
+        public Expression[] Variables
         {
-            get { return _references; }
+            get { return _variables; }
         }
 
-        public ReadStatement(Position position, Reference[] references):
+        public ReadStatement(Position position, Expression[] variables):
             base(NodeKind.ReadStatement, position)
         {
-            _references = references;
-            foreach (Reference reference in _references)
-                reference.Above = this;
+            _variables = variables;
+            foreach (Expression variable in _variables)
+                variable.Above = this;
         }
 
         public static new ReadStatement Parse(Tokens tokens)
@@ -47,10 +47,10 @@ namespace Bacchi.Syntax
             Token start = tokens.Peek;
 
             tokens.Match(TokenKind.Keyword_Read);
-            var references = Reference.ParseList(tokens, TokenKind.Symbol_Semicolon);
+            var variables = Expression.ParseList(tokens, TokenKind.Symbol_Semicolon);
             tokens.Match(TokenKind.Symbol_Semicolon);
 
-            return new ReadStatement(start.Position, references);
+            return new ReadStatement(start.Position, variables);
         }
 
         public override void Visit(Visitor that)

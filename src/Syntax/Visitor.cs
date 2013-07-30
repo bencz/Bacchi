@@ -29,7 +29,6 @@ namespace Bacchi.Syntax
     {
         void Visit(Argument that);
         void Visit(ArrayExpression that);
-        void Visit(ArrayReference that);
         void Visit(ArrayType that);
         void Visit(Assignment that);
         void Visit(BinaryExpression that);
@@ -44,7 +43,6 @@ namespace Bacchi.Syntax
         void Visit(ForallStatement that);
         void Visit(Guard that);
         void Visit(IdentifierExpression that);
-        void Visit(IdentifierReference that);
         void Visit(IdentifierType that);
         void Visit(IfStatement that);
         void Visit(IntegerDefinition that);

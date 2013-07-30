@@ -53,11 +53,6 @@ namespace Bacchi.Passes
             /** \note There are no relevant nodes below this node. */
         }
 
-        public void Visit(ArrayReference that)
-        {
-            /** \note There are no relevant nodes below this node. */
-        }
-
         public void Visit(ArrayType that)
         {
             /** \note There are no relevant nodes below this node. */
@@ -128,11 +123,6 @@ namespace Bacchi.Passes
         }
 
         public void Visit(IdentifierExpression that)
-        {
-            /** \note There are no relevant nodes below this node. */
-        }
-
-        public void Visit(IdentifierReference that)
         {
             /** \note There are no relevant nodes below this node. */
         }

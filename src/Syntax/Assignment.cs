@@ -32,10 +32,10 @@ namespace Bacchi.Syntax
 {
     public class Assignment: Node
     {
-        private Reference _reference;
-        public Reference Reference
+        private Expression _variable;
+        public Expression Variable
         {
-            get { return _reference; }
+            get { return _variable; }
         }
 
         private Expression _expression;
@@ -44,11 +44,11 @@ namespace Bacchi.Syntax
             get { return _expression; }
         }
 
-        public Assignment(Position position, Reference reference, Expression expression):
+        public Assignment(Position position, Expression variable, Expression expression):
             base(NodeKind.Assignment, position)
         {
-            _reference = reference;
-            _reference.Above = this;
+            _variable = variable;
+            _variable.Above = this;
             _expression = expression;
             _expression.Above = this;
         }

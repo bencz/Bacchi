@@ -90,14 +90,6 @@ namespace Bacchi.Passes
             _writer.Write(']');
         }
 
-        public void Visit(ArrayReference that)
-        {
-            Visit(that.Reference);
-            _writer.Write('[');
-            Visit(that.Expression);
-            _writer.Write(']');
-        }
-
         public void Visit(ArrayType that)
         {
             Visit(that.Base);
@@ -105,7 +97,7 @@ namespace Bacchi.Passes
 
         public void Visit(Assignment that)
         {
-            Visit(that.Reference);
+            Visit(that.Variable);
             _writer.Write(" = ");
             Visit(that.Expression);
             _writer.WriteLine(';');
@@ -236,11 +228,6 @@ namespace Bacchi.Passes
         }
 
         public void Visit(IdentifierExpression that)
-        {
-            _writer.Write(that.Name);
-        }
-
-        public void Visit(IdentifierReference that)
         {
             _writer.Write(that.Name);
         }
@@ -460,9 +447,9 @@ namespace Bacchi.Passes
 
         public void Visit(ReadStatement that)
         {
-            foreach (Reference reference in that.References)
+            foreach (Expression variable in that.Variables)
             {
-                Visit(reference);
+                Visit(variable);
                 _writer.WriteLine(" = __gcl_integer_parse();");
             }
         }
