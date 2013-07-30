@@ -1,6 +1,7 @@
 /** \file
  *  Main task list (to-do list).
  *
+ *  \todo Drop the idea of using the symbol table for on-going symbol lookup; instead use a reference in each applied occurence.
  *  \todo Fix the problem that partial procedures are not handled at all.
  *  \todo Fix the problem that parameter names are \b not entered into the symbol table.
  *  \todo Generate a single, global structure definition for each tuple layout encountered (requires a separate pass).
