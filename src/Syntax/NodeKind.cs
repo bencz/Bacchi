@@ -52,7 +52,7 @@ namespace Bacchi.Syntax
         TypeDefinition,
         VariableDefinition,
 
-        ArrayExpression,
+        ArrayIndexExpression,
         BinaryExpression,
         IdentifierExpression,
         IntegerExpression,

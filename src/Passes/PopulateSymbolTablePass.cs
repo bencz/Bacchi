@@ -48,7 +48,7 @@ namespace Bacchi.Passes
             /** \note There are no relevant nodes below this node. */
         }
 
-        public void Visit(ArrayExpression that)
+        public void Visit(ArrayIndexExpression that)
         {
             /** \note There are no relevant nodes below this node. */
         }

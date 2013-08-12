@@ -19,14 +19,14 @@
 #endregion
 
 /** \file
- *  Defines the \c ArrayExpression class, which represents a bracketed array index expression (\c [index]).
+ *  Defines the \c ArrayIndexExpression class, which represents a bracketed array index expression (\c [index]).
  */
 
 using Bacchi.Kernel;                    // Error, Position, Tokens
 
 namespace Bacchi.Syntax
 {
-    public class ArrayExpression: Expression
+    public class ArrayIndexExpression: Expression
     {
 #region Literal attributes
         private Expression _array;
@@ -59,8 +59,8 @@ namespace Bacchi.Syntax
         }
 #endregion
 
-        public ArrayExpression(Position position, Expression array, Expression index):
-            base(NodeKind.ArrayExpression, position)
+        public ArrayIndexExpression(Position position, Expression array, Expression index):
+            base(NodeKind.ArrayIndexExpression, position)
         {
             _array = array;
             _array.Above = this;

@@ -28,7 +28,7 @@ namespace Bacchi.Syntax
     public interface Visitor
     {
         void Visit(Argument that);
-        void Visit(ArrayExpression that);
+        void Visit(ArrayIndexExpression that);
         void Visit(ArrayType that);
         void Visit(Assignment that);
         void Visit(BinaryExpression that);

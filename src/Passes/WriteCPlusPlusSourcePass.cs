@@ -81,7 +81,7 @@ namespace Bacchi.Passes
             Visit(that.Value);
         }
 
-        public void Visit(ArrayExpression that)
+        public void Visit(ArrayIndexExpression that)
         {
             /** \todo If an array slice, call memcpy(), otherwise use simple assignment. */
             Visit(that.Array);

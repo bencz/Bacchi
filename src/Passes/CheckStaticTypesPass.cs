@@ -52,7 +52,7 @@ namespace Bacchi.Passes
             /** \note Nothing to do, the \c CallStatement node performs the checks of arguments and parameters. */
         }
 
-        public void Visit(ArrayExpression that)
+        public void Visit(ArrayIndexExpression that)
         {
             /** \todo Check that the array index type matches the base type of array expression. */
         }

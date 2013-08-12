@@ -114,7 +114,7 @@ namespace Bacchi.Syntax
                         {
                             Token bracket = tokens.Match(TokenKind.Symbol_BracketBegin);
                             Expression other = Expression.Parse(tokens);
-                            result = new ArrayExpression(bracket.Position, result, other);
+                            result = new ArrayIndexExpression(bracket.Position, result, other);
                             tokens.Match(TokenKind.Symbol_BracketClose);
                         }
                     }

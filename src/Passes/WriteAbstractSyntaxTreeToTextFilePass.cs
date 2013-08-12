@@ -116,7 +116,7 @@ namespace Bacchi.Passes
             Visit(that.Value);
         }
 
-        public void Visit(ArrayExpression that)
+        public void Visit(ArrayIndexExpression that)
         {
             Enter(that);
             Print("Array", that.Array);
