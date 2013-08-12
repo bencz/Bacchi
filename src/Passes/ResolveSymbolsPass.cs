@@ -19,7 +19,7 @@
 #endregion
 
 /** \file
- *  Defines the \c PopulateSymbolTablePass class, which traverses the tree and builds the symbol table.
+ *  Defines the \c ResolveSymbolsPass class, which traverses the tree and links up applied occurences of symbols with their type.
  */
 
 using Bacchi.Kernel;                    // Error
@@ -28,12 +28,12 @@ using Bacchi.Syntax;
 namespace Bacchi.Passes
 {
     /** Populates the global symbol table with symbols from the AST. */
-    public class PopulateSymbolTablePass: Visitor
+    public class ResolveSymbolsPass: Visitor
     {
         /** Cache of the global symbol table found in the topmost \c Program node. */
         private Symbols _symbols;
 
-        public PopulateSymbolTablePass()
+        public ResolveSymbolsPass()
         {
         }
 

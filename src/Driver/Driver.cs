@@ -56,8 +56,8 @@ namespace Bacchi.Driver
                 // Create list of passes to go through.
                 List<Visitor> passes = new List<Visitor>();
 
-                // Populate the global symbol table.
-                passes.Add(new PopulateSymbolTablePass());
+                // Link up each applied occurence of a symbol with its type definition.
+                passes.Add(new ResolveSymbolsPass());
 
                 // Enforce the static type rules of the language while creating and propagating attributes in the tree.
                 passes.Add(new CheckStaticTypesPass());
