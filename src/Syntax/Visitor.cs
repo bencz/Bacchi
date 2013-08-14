@@ -27,7 +27,6 @@ namespace Bacchi.Syntax
     /** Interface used by the Visitor pattern. */
     public interface Visitor
     {
-        void Visit(Argument that);
         void Visit(ArrayIndexExpression that);
         void Visit(ArrayType that);
         void Visit(Assignment that);

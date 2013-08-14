@@ -75,12 +75,6 @@ namespace Bacchi.Passes
                 node.Visit(this);
         }
 
-        public void Visit(Argument that)
-        {
-            /** \todo Determine if a value or reference parameter; the latter must sometimes be prefixed by an ampersand (&). */
-            Visit(that.Value);
-        }
-
         public void Visit(ArrayIndexExpression that)
         {
             /** \todo If an array slice, call memcpy(), otherwise use simple assignment. */
@@ -156,7 +150,7 @@ namespace Bacchi.Passes
         {
             _writer.Write(that.Name);
             _writer.Write('(');
-            foreach (Argument argument in that.Arguments)
+            foreach (Expression argument in that.Arguments)
             {
                 Visit(argument);
                 if (argument != that.Arguments[that.Arguments.Length - 1])

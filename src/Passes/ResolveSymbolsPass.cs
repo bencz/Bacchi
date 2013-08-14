@@ -27,11 +27,10 @@ using Bacchi.Syntax;
 
 namespace Bacchi.Passes
 {
-    /** Populates the global symbol table with symbols from the AST. */
+    /** Creates a temporary symbol table and resolves all applied occurences of a symbol so that it points to its type. */
     public class ResolveSymbolsPass: Visitor
     {
-        /** Cache of the global symbol table found in the topmost \c Program node. */
-        private Symbols _symbols;
+        private Symbols _symbols = new Symbols();
 
         public ResolveSymbolsPass()
         {
@@ -41,11 +40,6 @@ namespace Bacchi.Passes
         {
             foreach (Node node in nodes)
                 node.Visit(this);
-        }
-
-        public void Visit(Argument that)
-        {
-            /** \note There are no relevant nodes below this node. */
         }
 
         public void Visit(ArrayIndexExpression that)
@@ -94,6 +88,7 @@ namespace Bacchi.Passes
         public void Visit(CallStatement that)
         {
             /** \note There are no relevant nodes below this node. */
+            Definition definition = _symbols.Lookup(that.Name);
         }
 
         public void Visit(ConstantDefinition that)
@@ -210,14 +205,8 @@ namespace Bacchi.Passes
 
         public void Visit(Program that)
         {
-            // Cache the global symbol table locally.
-            _symbols = that.Symbols;
-
             foreach (File file in that.Files)
                 file.Visit(this);
-
-            // Release the cached symbol table.
-            _symbols = null;
         }
 
         public void Visit(RangeType that)

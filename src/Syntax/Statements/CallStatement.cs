@@ -34,18 +34,18 @@ namespace Bacchi.Syntax
             get { return _name; }
         }
 
-        private Argument[] _arguments;
-        public Argument[] Arguments
+        private Expression[] _arguments;
+        public Expression[] Arguments
         {
             get { return _arguments; }
         }
 
-        public CallStatement(Position position, string name, Argument[] arguments):
+        public CallStatement(Position position, string name, Expression[] arguments):
             base(NodeKind.CallStatement, position)
         {
             _name = name;
             _arguments = arguments;
-            foreach (Argument argument in _arguments)
+            foreach (Expression argument in _arguments)
                 argument.Above = this;
         }
 
@@ -54,7 +54,9 @@ namespace Bacchi.Syntax
             Token start = tokens.Peek;
 
             string name = tokens.Match(TokenKind.Identifier).Text;
-            var arguments = Argument.ParseList(tokens);
+            tokens.Match(TokenKind.Symbol_ParenthesisBegin);
+            var arguments = Expression.ParseList(tokens, TokenKind.Symbol_ParenthesisClose);
+            tokens.Match(TokenKind.Symbol_ParenthesisClose);
             tokens.Match(TokenKind.Symbol_Semicolon);
 
             return new CallStatement(start.Position, name, arguments);

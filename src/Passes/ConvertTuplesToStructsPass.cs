@@ -45,11 +45,6 @@ namespace Bacchi.Passes
                 node.Visit(this);
         }
 
-        public void Visit(Argument that)
-        {
-            /** \note There are no relevant nodes below this node. */
-        }
-
         public void Visit(ArrayIndexExpression that)
         {
             /** \note There are no relevant nodes below this node. */

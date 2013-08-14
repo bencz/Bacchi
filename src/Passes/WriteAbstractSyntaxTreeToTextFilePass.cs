@@ -107,15 +107,6 @@ namespace Bacchi.Passes
 
         /** Visitor methods defines in the \c Visitor interface. *****************************************************************/
 
-        public void Visit(Argument that)
-        {
-            Enter(that);
-            Print("Value", that.Value);
-            Leave(that);
-
-            Visit(that.Value);
-        }
-
         public void Visit(ArrayIndexExpression that)
         {
             Enter(that);
