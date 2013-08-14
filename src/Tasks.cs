@@ -2,6 +2,7 @@
  *  Main task list (to-do list).
  *
  *  \todo Register the GCL standard environment (Boolean, integer, string, false, true) prior to resolving symbols.
+ *  \todo Eliminate the \c Syntax/Definition subdirectory as a definition \b ought to be a name and a type.
  *  \todo Eliminate the \c Argument class as it is nothing more than an additional layer around \c Expression.
  *  \todo Ensure that the resolver correctly determines the type of all known symbols - either a type or \c ErrorType.
  *  \todo Drop the idea of using the symbol table for on-going symbol lookup; instead use a reference in each applied occurence.
