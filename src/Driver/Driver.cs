@@ -79,11 +79,6 @@ namespace Bacchi.Driver
                     pass.Visit(program);
                 }
 
-#if TEST
-                // Dump symbol table to 'program.sym' file.
-                program.Symbols.Dump("program.sym");
-#endif
-
                 result = 0;
             }
             catch (Error that)
